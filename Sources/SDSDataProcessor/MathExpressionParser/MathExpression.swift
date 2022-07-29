@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import SDSStructures
 
 public indirect enum BinaryTree<T> {
     case node(_ left: BinaryTree<T>,_ token: T,_ right: BinaryTree<T>)
