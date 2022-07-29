@@ -1,4 +1,4 @@
-@testable import MathExpressionParser
+@testable import SDSDataProcessor
 import XCTest
 
 final class MathExpressionParserWithBrackets_Tests: XCTestCase {

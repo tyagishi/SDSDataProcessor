@@ -1,7 +1,34 @@
-@testable import MathExpressionParser
+@testable import SDSDataProcessor
 import XCTest
 
 final class BruteForceLexer_Tests: XCTestCase {
+
+    func test_One() throws {
+        let sut = BruteForceLexer()
+        let tokens = try XCTUnwrap(sut.lex("1"))
+        XCTAssertEqual(tokens.count, 1)
+        let sutParser = MathExpressionParser()
+        let expression = try XCTUnwrap(sutParser.parse(tokens))
+        XCTAssertEqual(try expression.calc(), 1)
+    }
+
+    func test_PlusOne() throws {
+        let sut = BruteForceLexer()
+        let tokens = try XCTUnwrap(sut.lex("+1"))
+        XCTAssertEqual(tokens.count, 1)
+        let sutParser = MathExpressionParser()
+        let expression = try XCTUnwrap(sutParser.parse(tokens))
+        XCTAssertEqual(try expression.calc(), 1)
+    }
+
+    func test_MinusOne() throws {
+        let sut = BruteForceLexer()
+        let tokens = try XCTUnwrap(sut.lex("-1"))
+        XCTAssertEqual(tokens.count, 1)
+        let sutParser = MathExpressionParser()
+        let expression = try XCTUnwrap(sutParser.parse(tokens))
+        XCTAssertEqual(try expression.calc(), -1)
+    }
 
     func test_OnePlusOne() throws {
         let sut = BruteForceLexer()
@@ -64,15 +91,6 @@ final class BruteForceLexer_Tests: XCTestCase {
         let sutParser = MathExpressionParser()
         let expression = try XCTUnwrap(sutParser.parse(tokens))
         XCTAssertEqual(try expression.calc(), -2)
-    }
-
-    func test_PlusOne() throws {
-        let sut = BruteForceLexer()
-        let tokens = try XCTUnwrap(sut.lex("+1"))
-        XCTAssertEqual(tokens.count, 1)
-        let sutParser = MathExpressionParser()
-        let expression = try XCTUnwrap(sutParser.parse(tokens))
-        XCTAssertEqual(try expression.calc(), 1)
     }
 
     func test_PlusPlusOne_ShouldFailInParser() throws {

@@ -129,6 +129,22 @@ public enum Token: CustomDebugStringConvertible, CaseIterable, Equatable {
 
 
 extension CharacterSet {
+    static var plusMinus: CharacterSet {
+        var ope = CharacterSet()
+        ope.insert(charactersIn: "+-")
+        return ope
+    }
+    static var leadingNumericCharacters: CharacterSet {
+        var numeric = CharacterSet.decimalDigits
+        numeric.insert(charactersIn: "+-.,")
+        return numeric
+    }
+    static var strictNumericCharacters: CharacterSet {
+        var numeric = CharacterSet.decimalDigits
+        numeric.insert(charactersIn: ".,")
+        return numeric
+    }
+
     static var numericCharacters: CharacterSet {
         var numeric = CharacterSet.decimalDigits
         numeric.insert(charactersIn: "+-.,")
