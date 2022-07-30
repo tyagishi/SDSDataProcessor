@@ -14,41 +14,40 @@ final class MathExpressionParserWithBrackets_Tests: XCTestCase {
     func test_parse_brankets() throws {
         let tokens = [Token.OpenBracket, Token.Numeric(1.0), Token.Operator("+"), Token.Numeric(1.0), Token.CloseBracket]
         let sut = MathExpressionParser()
-        
+
         let expression = try XCTUnwrap(sut.parse(tokens))
         XCTAssertEqual(try expression.calc(), 2.0)
     }
 
     func test_parse_branketsLeftSide_noEffectResult() throws {
+        // ((1,+,2),+,3)
         let tokens = [Token.OpenBracket, Token.Numeric(1.0), Token.Operator("+"), Token.Numeric(2.0), Token.CloseBracket, Token.Operator("+"), Token.Numeric(3.0)]
         let sut = MathExpressionParser()
         let expression = try XCTUnwrap(sut.parse(tokens))
 
         let topToken = try XCTUnwrap(expression.token)
         XCTAssertEqual(topToken, .Operator("+"))
+
+        let leftNode = try XCTUnwrap(expression.left)
+        let leftToken = leftNode.token
+        XCTAssertTrue(leftToken.isBracketed)
+        let bracketed = try XCTUnwrap(leftToken.expression)
+        XCTAssertEqual(bracketed.token, .Operator("+"))
         
-        let left = expression.left // brancket node
-        let child = left.child
+        let bracketedLeft = try XCTUnwrap(bracketed.left)
+        XCTAssertEqual(bracketedLeft.token, .Numeric(1.0))
         
-        let leftToken = try XCTUnwrap(child.token)
-        XCTAssertEqual(leftToken, .Operator("+"))
+        let bracketedRight = try XCTUnwrap(bracketed.right)
+        XCTAssertEqual(bracketedRight.token, .Numeric(2.0))
 
-        let leftLeft = child.left
-        let leftLeftToken = try XCTUnwrap(leftLeft.token)
-        XCTAssertEqual(leftLeftToken, .Numeric(1.0))
-
-        let leftRight = child.right
-        let leftRightToken = try XCTUnwrap(leftRight.token)
-        XCTAssertEqual(leftRightToken, .Numeric(2.0))
-
-        let right = expression.right
-        let rightToken = try XCTUnwrap(right.token)
-        XCTAssertEqual(rightToken, .Numeric(3))
+        let rightToken = try XCTUnwrap(expression.right?.token)
+        XCTAssertEqual(rightToken, .Numeric(3.0))
 
         XCTAssertEqual(try expression.calc(), 6.0)
     }
-    
+
     func test_parse_branketsRightSide_noEffectResult() throws {
+        // (1,+,(2,+,3))
         let tokens = [Token.Numeric(1.0), Token.Operator("+"), Token.OpenBracket, Token.Numeric(2.0), Token.Operator("+"), Token.Numeric(3.0), Token.CloseBracket]
         let sut = MathExpressionParser()
         let expression = try XCTUnwrap(sut.parse(tokens))
@@ -56,29 +55,26 @@ final class MathExpressionParserWithBrackets_Tests: XCTestCase {
         let topToken = try XCTUnwrap(expression.token)
         XCTAssertEqual(topToken, .Operator("+"))
         
-        let left = expression.left // brancket node
-        let leftToken = try XCTUnwrap(left.token)
+        let leftToken = try XCTUnwrap(expression.left?.token)
         XCTAssertEqual(leftToken, .Numeric(1.0))
 
-        let right = expression.right
-        let child = right.child
+        let rightNode = try XCTUnwrap(expression.right)
+        XCTAssertTrue(rightNode.token.isBracketed)
         
-        let rightToken = try XCTUnwrap(child.token)
-        XCTAssertEqual(rightToken, .Operator("+"))
-
-        let rightLeft = child.left
-        let rightLeftToken = try XCTUnwrap(rightLeft.token)
-        XCTAssertEqual(rightLeftToken, .Numeric(2.0))
-
-        let rightRight = child.right
-        let rightRightToken = try XCTUnwrap(rightRight.token)
-        XCTAssertEqual(rightRightToken, .Numeric(3.0))
-
+        let bracketed = try XCTUnwrap(rightNode.token.expression)
+        XCTAssertEqual(bracketed.token, .Operator("+"))
         
+        let bracketedLeft = try XCTUnwrap(bracketed.left)
+        XCTAssertEqual(bracketedLeft.token, .Numeric(2.0))
+        
+        let bracketedRight = try XCTUnwrap(bracketed.right)
+        XCTAssertEqual(bracketedRight.token, .Numeric(3.0))
+
         XCTAssertEqual(try expression.calc(), 6.0)
     }
 
     func test_parse_brankets_effectResult() throws {
+        // ((1,+,2),*,3)
         let tokens = [Token.OpenBracket, Token.Numeric(1.0), Token.Operator("+"), Token.Numeric(2.0), Token.CloseBracket, Token.Operator("*"), Token.Numeric(3.0)]
         let sut = MathExpressionParser()
         let expression = try XCTUnwrap(sut.parse(tokens))
@@ -86,24 +82,21 @@ final class MathExpressionParserWithBrackets_Tests: XCTestCase {
         let topToken = try XCTUnwrap(expression.token)
         XCTAssertEqual(topToken, .Operator("*"))
         
-        let left = expression.left // brancket node
-        let child = left.child
+        let leftNode = try XCTUnwrap(expression.left)
+        XCTAssertTrue(leftNode.token.isBracketed)
         
-        let leftToken = try XCTUnwrap(child.token)
-        XCTAssertEqual(leftToken, .Operator("+"))
+        let bracketed = try XCTUnwrap(leftNode.token.expression)
+        XCTAssertEqual(bracketed.token, .Operator("+"))
 
-        let leftLeft = child.left
-        let leftLeftToken = try XCTUnwrap(leftLeft.token)
-        XCTAssertEqual(leftLeftToken, .Numeric(1.0))
+        let bracketedLeft = try XCTUnwrap(bracketed.left)
+        XCTAssertEqual(bracketedLeft.token, .Numeric(1.0))
 
-        let leftRight = child.right
-        let leftRightToken = try XCTUnwrap(leftRight.token)
-        XCTAssertEqual(leftRightToken, .Numeric(2.0))
-
-        let right = expression.right
-        let rightToken = try XCTUnwrap(right.token)
-        XCTAssertEqual(rightToken, .Numeric(3))
+        let bracketedRight = try XCTUnwrap(bracketed.right)
+        XCTAssertEqual(bracketedRight.token, .Numeric(2.0))
         
+        let rightNode = try XCTUnwrap(expression.right)
+        XCTAssertEqual(rightNode.token, .Numeric(3.0))
+
         XCTAssertEqual(try expression.calc(), 9.0)
     }
 

@@ -15,6 +15,7 @@ public enum Token: CustomDebugStringConvertible, CaseIterable, Equatable {
     case Operator(String)
     case OpenBracket
     case CloseBracket
+    case Bracketed(MathExpression)
 
     func instanciateWithValue(_ string: String) -> Token? {
         switch self {
@@ -29,6 +30,8 @@ public enum Token: CustomDebugStringConvertible, CaseIterable, Equatable {
             return .OpenBracket
         case .CloseBracket:
             return .CloseBracket
+        case .Bracketed(_):
+            fatalError()
         }
     }
     
@@ -42,6 +45,8 @@ public enum Token: CustomDebugStringConvertible, CaseIterable, Equatable {
             return CharacterSet.openBracketsCharacters
         case .CloseBracket:
             return CharacterSet.closeBracketsCharacters
+        case .Bracketed(_):
+            return CharacterSet() // empty
         }
     }
     
@@ -87,14 +92,25 @@ public enum Token: CustomDebugStringConvertible, CaseIterable, Equatable {
         return false
     }
     
-    var priority: Int { // 0: low, 1: high
-        switch self {
-        case .Operator(let string):
-            if string == "*" || string == "/" { return 1 }
-            return 0
-        default:
-            return 0
+    var isBracketed: Bool {
+        if case .Bracketed(_) = self {
+            return true
         }
+        return false
+    }
+    
+    var expression: MathExpression? {
+        switch self {
+        case .Bracketed(let expression):
+            return expression
+        default:
+            return nil
+        }
+    }
+    
+    var isPlusMinus: Bool {
+        guard let opeString = self.opeString else { return false }
+        return opeString == "+" || opeString == "-"
     }
     
     var isOperator: Bool {
@@ -123,6 +139,8 @@ public enum Token: CustomDebugStringConvertible, CaseIterable, Equatable {
             return "Open"
         case .CloseBracket:
             return "Close"
+        case .Bracketed(let expression):
+            return "Bracketed \(expression)"
         }
     }
 }

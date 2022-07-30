@@ -11,17 +11,15 @@ final class MathExpressionParser_Tests: XCTestCase {
         let topToken = try XCTUnwrap(expression.token)
         XCTAssertEqual(topToken, .Operator("+"))
 
-        let left = expression.left
-        let leftToken = try XCTUnwrap(left.token)
+        let leftNode = try XCTUnwrap(expression.left)
+        let leftToken = leftNode.token
         XCTAssertEqual(leftToken, .Numeric(1.0))
-        XCTAssertEqual(left.left, .empty)
-        XCTAssertEqual(left.right, .empty)
+        XCTAssertEqual(leftNode.isLeaf, true)
         
-        let right = expression.right
-        let rightToken = try XCTUnwrap(right.token)
+        let rightNode = try XCTUnwrap(expression.right)
+        let rightToken = rightNode.token
         XCTAssertEqual(rightToken, .Numeric(2.0))
-        XCTAssertEqual(right.left, .empty)
-        XCTAssertEqual(right.right, .empty)
+        XCTAssertEqual(rightNode.isLeaf, true)
 
         XCTAssertEqual(try expression.calc(), 3.0)
     }
@@ -34,48 +32,70 @@ final class MathExpressionParser_Tests: XCTestCase {
         let topToken = try XCTUnwrap(expression.token)
         XCTAssertEqual(topToken, .Operator("+"))
 
-        let left = expression.left
-        let leftToken = try XCTUnwrap(left.token)
+        let leftNode = try XCTUnwrap(expression.left)
+        let leftToken = leftNode.token
         XCTAssertEqual(leftToken, .Operator("+"))
         
-        let leftLeft = left.left
-        let leftLeftToken = try XCTUnwrap(leftLeft.token)
+        let leftLeftNode = try XCTUnwrap(leftNode.left)
+        let leftLeftToken = leftLeftNode.token
         XCTAssertEqual(leftLeftToken, .Numeric(1.0))
         
-        let leftRight = left.right
-        let leftRightToken = try XCTUnwrap(leftRight.token)
+        let leftRightNode = try XCTUnwrap(leftNode.right)
+        let leftRightToken = leftRightNode.token
         XCTAssertEqual(leftRightToken, .Numeric(1.1))
 
-        let right = expression.right
-        let rightToken = try XCTUnwrap(right.token)
+        let rightNode = try XCTUnwrap(expression.right)
+        let rightToken = rightNode.token
         XCTAssertEqual(rightToken, .Numeric(1.2))
         
         XCTAssertEqual(try expression.calc(), 3.3)
     }
 
-    func test_parse_5TokensWithTimesTimes_successToParse() throws {
-        let tokens = [Token.Numeric(1.0), Token.Operator("*"), Token.Numeric(1.1), Token.Operator("*"), Token.Numeric(1.2)]
+    
+    func test_parse_3Tokens_Times_successToParse() throws {
+        let tokens = [Token.Numeric(1.0), Token.Operator("*"), Token.Numeric(2.0)]
         let sut = MathExpressionParser()
         let expression = try XCTUnwrap(sut.parse(tokens))
 
         let topToken = try XCTUnwrap(expression.token)
         XCTAssertEqual(topToken, .Operator("*"))
 
-        let left = expression.left
-        let leftToken = try XCTUnwrap(left.token)
-        XCTAssertEqual(leftToken, .Operator("*"))
+        let leftNode = try XCTUnwrap(expression.left)
+        let leftToken = leftNode.token
+        XCTAssertEqual(leftToken, .Numeric(1.0))
+        XCTAssertEqual(leftNode.isLeaf, true)
         
-        let leftLeft = left.left
-        let leftLeftToken = try XCTUnwrap(leftLeft.token)
-        XCTAssertEqual(leftLeftToken, .Numeric(1.0))
-        
-        let leftRight = left.right
-        let leftRightToken = try XCTUnwrap(leftRight.token)
-        XCTAssertEqual(leftRightToken, .Numeric(1.1))
+        let rightNode = try XCTUnwrap(expression.right)
+        let rightToken = rightNode.token
+        XCTAssertEqual(rightToken, .Numeric(2.0))
+        XCTAssertEqual(rightNode.isLeaf, true)
 
-        let right = expression.right
-        let rightToken = try XCTUnwrap(right.token)
-        XCTAssertEqual(rightToken, .Numeric(1.2))
+        XCTAssertEqual(try expression.calc(), 2.0)
+    }
+    
+    func test_parse_5TokensWithTimesTimes_successToParse() throws {
+        let tokens = [Token.Numeric(1.0), Token.Operator("*"), Token.Numeric(1.1), Token.Operator("*"), Token.Numeric(1.2)]
+        let sut = MathExpressionParser()
+        let expression = try XCTUnwrap(sut.parse(tokens))
+
+        let topToken = expression.token
+        XCTAssertEqual(topToken, .Operator("*"))
+
+        let leftNode = try XCTUnwrap(expression.left)
+        let leftToken = leftNode.token
+        XCTAssertEqual(leftToken, .Numeric(1.0))
+        
+        let rightNode = try XCTUnwrap(expression.right)
+        let rightToken = rightNode.token
+        XCTAssertEqual(rightToken, .Operator("*"))
+
+        let rightLeftNode = try XCTUnwrap(rightNode.left)
+        let rightLeftToken = rightLeftNode.token
+        XCTAssertEqual(rightLeftToken, .Numeric(1.1))
+        
+        let rightRightNode = try XCTUnwrap(rightNode.right)
+        let rightRightToken = rightRightNode.token
+        XCTAssertEqual(rightRightToken, .Numeric(1.2))
         
         XCTAssertEqual(try expression.calc(), 1.32)
     }
@@ -89,22 +109,21 @@ final class MathExpressionParser_Tests: XCTestCase {
         let topToken = try XCTUnwrap(expression.token)
         XCTAssertEqual(topToken, .Operator("+"))
 
-        let left = expression.left
-        let leftToken = try XCTUnwrap(left.token)
+        let leftNode = try XCTUnwrap(expression.left)
+        let leftToken = leftNode.token
         XCTAssertEqual(leftToken, .Numeric(1.0))
-        XCTAssertEqual(left.left, .empty)
-        XCTAssertEqual(left.right, .empty)
+        XCTAssertEqual(leftToken.isNumeric, true)
         
-        let right = expression.right
-        let rightToken = try XCTUnwrap(right.token)
+        let rightNode = try XCTUnwrap(expression.right)
+        let rightToken = rightNode.token
         XCTAssertEqual(rightToken, .Operator("*"))
         
-        let rightLeft = right.left
-        let rightLeftToken = try XCTUnwrap(rightLeft.token)
+        let rightLeftNode = try XCTUnwrap(rightNode.left)
+        let rightLeftToken = rightLeftNode.token
         XCTAssertEqual(rightLeftToken, .Numeric(2.0))
         
-        let rightRight = right.right
-        let rightRightToken = try XCTUnwrap(rightRight.token)
+        let rightRightNode = try XCTUnwrap(rightNode.right)
+        let rightRightToken = rightRightNode.token
         XCTAssertEqual(rightRightToken, .Numeric(3.0))
                                 
         let result = try XCTUnwrap(expression.calc())
@@ -118,20 +137,20 @@ final class MathExpressionParser_Tests: XCTestCase {
         let expression = try XCTUnwrap(sut.parse(tokens))
         XCTAssertNotNil(expression)
 
-        let left = expression.left
-        let leftToken = try XCTUnwrap(left.token)
+        let leftNode = try XCTUnwrap(expression.left)
+        let leftToken = leftNode.token
         XCTAssertEqual(leftToken, .Operator("*"))
         
-        let leftLeft = left.left
-        let leftLeftToken = try XCTUnwrap(leftLeft.token)
+        let leftLeftNode = try XCTUnwrap(leftNode.left)
+        let leftLeftToken = leftLeftNode.token
         XCTAssertEqual(leftLeftToken, .Numeric(1.0))
         
-        let leftRight = left.right
-        let leftRightToken = try XCTUnwrap(leftRight.token)
+        let leftRightNode = try XCTUnwrap(leftNode.right)
+        let leftRightToken = leftRightNode.token
         XCTAssertEqual(leftRightToken, .Numeric(1.1))
 
-        let right = expression.right
-        let rightToken = try XCTUnwrap(right.token)
+        let rightNode = try XCTUnwrap(expression.right)
+        let rightToken = rightNode.token
         XCTAssertEqual(rightToken, .Numeric(1.2))
         
         let result = try XCTUnwrap(expression.calc())
@@ -149,28 +168,28 @@ final class MathExpressionParser_Tests: XCTestCase {
         let topToken = try XCTUnwrap(expression.token)
         XCTAssertEqual(topToken, .Operator("+"))
         
-        let left = expression.left
-        let leftToken = try XCTUnwrap(left.token)
+        let leftNode = try XCTUnwrap(expression.left)
+        let leftToken = leftNode.token
         XCTAssertEqual(leftToken, .Operator("*"))
         
-        let leftLeft = left.left
-        let leftLeftToken = try XCTUnwrap(leftLeft.token)
+        let leftLeftNode = try XCTUnwrap(leftNode.left)
+        let leftLeftToken = leftLeftNode.token
         XCTAssertEqual(leftLeftToken, .Numeric(1.0))
         
-        let leftRight = left.right
-        let leftRightToken = try XCTUnwrap(leftRight.token)
+        let leftRightNode = try XCTUnwrap(leftNode.right)
+        let leftRightToken = leftRightNode.token
         XCTAssertEqual(leftRightToken, .Numeric(4))
 
-        let right = expression.right
-        let rightToken = try XCTUnwrap(right.token)
+        let rightNode = try XCTUnwrap(expression.right)
+        let rightToken = rightNode.token
         XCTAssertEqual(rightToken, .Operator("*"))
 
-        let rightLeft = right.left
-        let rightLeftToken = try XCTUnwrap(rightLeft.token)
+        let rightLeftNode = try XCTUnwrap(rightNode.left)
+        let rightLeftToken = rightLeftNode.token
         XCTAssertEqual(rightLeftToken, .Numeric(2))
         
-        let rightRight = right.right
-        let rightRightToken = try XCTUnwrap(rightRight.token)
+        let rightRightNode = try XCTUnwrap(rightNode.right)
+        let rightRightToken = rightRightNode.token
         XCTAssertEqual(rightRightToken, .Numeric(3))
 
         let result = try XCTUnwrap(expression.calc())
@@ -186,29 +205,28 @@ final class MathExpressionParser_Tests: XCTestCase {
         let topToken = try XCTUnwrap(expression.token)
         XCTAssertEqual(topToken, .Operator("+"))
         
-        let left = expression.left
-        let leftToken = try XCTUnwrap(left.token)
+        let leftNode = try XCTUnwrap(expression.left)
+        let leftToken = leftNode.token
         XCTAssertEqual(leftToken, .Operator("*"))
 
-        let leftLeft = left.left
-        let leftLeftToken = try XCTUnwrap(leftLeft.token)
-        XCTAssertEqual(leftLeftToken, .Operator("*"))
+        let leftLeftNode = try XCTUnwrap(leftNode.left)
+        let leftLeftToken = leftLeftNode.token
+        XCTAssertEqual(leftLeftToken, .Numeric(1.0))
+                       
+        let leftRightNode = try XCTUnwrap(leftNode.right)
+        let leftRightToken = leftRightNode.token
+        XCTAssertEqual(leftRightToken, .Operator("*"))
+        
+        let leftRightLeftNode = try XCTUnwrap(leftRightNode.left)
+        let leftRightLeftToken = leftRightLeftNode.token
+        XCTAssertEqual(leftRightLeftToken, .Numeric(4))
 
-        
-        let leftLeftLeft = leftLeft.left
-        let leftLeftLeftToken = try XCTUnwrap(leftLeftLeft.token)
-        XCTAssertEqual(leftLeftLeftToken, .Numeric(1.0))
-        
-        let leftLeftRight = leftLeft.right
-        let leftLeftRightToken = try XCTUnwrap(leftLeftRight.token)
-        XCTAssertEqual(leftLeftRightToken, .Numeric(4))
-        
-        let leftRight = left.right
-        let leftRightToken = try XCTUnwrap(leftRight.token)
-        XCTAssertEqual(leftRightToken, .Numeric(2))
-
-        let right = expression.right
-        let rightToken = try XCTUnwrap(right.token)
+        let leftRightRightNode = try XCTUnwrap(leftRightNode.right)
+        let leftRightRightToken = leftRightRightNode.token
+        XCTAssertEqual(leftRightRightToken, .Numeric(2))
+                       
+        let rightNode = try XCTUnwrap(expression.right)
+        let rightToken = rightNode.token
         XCTAssertEqual(rightToken, .Numeric(3))
 
         let result = try XCTUnwrap(expression.calc())
@@ -247,20 +265,20 @@ final class MathExpressionParser_Tests: XCTestCase {
         let topToken = try XCTUnwrap(expression.token)
         XCTAssertEqual(topToken, .Operator("-"))
 
-        let left = expression.left
-        let leftToken = try XCTUnwrap(left.token)
+        let leftNode = try XCTUnwrap(expression.left)
+        let leftToken = leftNode.token
         XCTAssertEqual(leftToken, .Operator("+"))
         
-        let leftLeft = left.left
-        let leftLeftToken = try XCTUnwrap(leftLeft.token)
+        let leftLeftNode = try XCTUnwrap(leftNode.left)
+        let leftLeftToken = leftLeftNode.token
         XCTAssertEqual(leftLeftToken, .Numeric(1.0))
         
-        let leftRight = left.right
-        let leftRightToken = try XCTUnwrap(leftRight.token)
+        let leftRightNode = try XCTUnwrap(leftNode.right)
+        let leftRightToken = leftRightNode.token
         XCTAssertEqual(leftRightToken, .Numeric(2.0))
 
-        let right = expression.right
-        let rightToken = try XCTUnwrap(right.token)
+        let rightNode = try XCTUnwrap(expression.right)
+        let rightToken = rightNode.token
         XCTAssertEqual(rightToken, .Numeric(3.0))
 
         XCTAssertEqual(try XCTUnwrap(expression.calc()), 0.0, accuracy: 0.0001) // 1 + 2 - 3 = 0
