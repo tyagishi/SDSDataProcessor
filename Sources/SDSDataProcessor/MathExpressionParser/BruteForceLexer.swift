@@ -35,7 +35,10 @@ public class BruteForceLexer {
         
         for token in Token.allCases {
             // skip Numeric scanner after numeric
-            if let lastToken = lastToken, case .Numeric(_) = lastToken, case .Numeric(_) = token { continue }
+            if let lastToken = lastToken {
+                if case .Numeric(_) = lastToken, case .Numeric(_) = token { continue }
+                if case .CloseBracket = lastToken, case .Numeric(_) = token { continue }
+            }
             if case .Numeric(_) = token,
                let numericToken = scanNumeric(scanner) {
                 return numericToken
