@@ -35,13 +35,12 @@ public class BruteForceLexer {
         while !scanner.isAtEnd {
             guard let token = scanToken(scanner, pastTokens: foundTokens) else { throw Error.InvalidToken }
             foundTokens.append(token)
+            consumeWhitespace(scanner)
         }
         return foundTokens
     }
 
     func scanToken(_ scanner: Scanner, pastTokens: [Token]) -> Token? {
-        consumeWhitespace(scanner)
-        
         for token in Token.possibleTokens(pastTokens: pastTokens) {
             // skip Numeric scanner after numeric
             if case .Numeric(_) = token,
@@ -77,9 +76,7 @@ public class BruteForceLexer {
         return nil
 
     }
-    
-    
-    
+
     func scanToken(_ scanner: Scanner, token: Token) -> Token? {
         let startPosition = scanner.currentIndex
         if let scanString = scanner.scanCharacters(from: token.scanCharacterSet),
