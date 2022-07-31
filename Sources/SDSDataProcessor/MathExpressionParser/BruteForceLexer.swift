@@ -7,6 +7,19 @@
 
 import Foundation
 
+extension Token {
+    static func possibleTokens(pastTokens:[Token]) -> [Token] {
+        guard let lastToken = pastTokens.last else { return Token.allCases }
+        
+        switch lastToken {
+        case .Numeric(_), .CloseBracket:
+            return [.Operator("+"), .OpenBracket, .CloseBracket]
+        default:
+            return Token.allCases
+        }
+    }
+}
+
 public class BruteForceLexer {
     typealias Error = MathExpressionParserError
     let numericCharacterSet = CharacterSet.numericCharacters
@@ -19,26 +32,18 @@ public class BruteForceLexer {
         let scanner = Scanner(string: string)
         scanner.charactersToBeSkipped = CharacterSet()
 
-        var lastToken: Token? = nil
         while !scanner.isAtEnd {
-            guard let token = scanToken(scanner, lastToken: lastToken) else { throw Error.InvalidToken }
+            guard let token = scanToken(scanner, pastTokens: foundTokens) else { throw Error.InvalidToken }
             foundTokens.append(token)
-            lastToken = token
         }
         return foundTokens
     }
-    
 
-    
-    func scanToken(_ scanner: Scanner, lastToken: Token?) -> Token? {
+    func scanToken(_ scanner: Scanner, pastTokens: [Token]) -> Token? {
         consumeWhitespace(scanner)
         
-        for token in Token.allCases {
+        for token in Token.possibleTokens(pastTokens: pastTokens) {
             // skip Numeric scanner after numeric
-            if let lastToken = lastToken {
-                if case .Numeric(_) = lastToken, case .Numeric(_) = token { continue }
-                if case .CloseBracket = lastToken, case .Numeric(_) = token { continue }
-            }
             if case .Numeric(_) = token,
                let numericToken = scanNumeric(scanner) {
                 return numericToken
