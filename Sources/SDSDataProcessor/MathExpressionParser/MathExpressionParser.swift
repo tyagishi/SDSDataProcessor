@@ -12,6 +12,7 @@ public enum MathExpressionParserError: Error {
     case InvalidToken
     case InvalidExpression
     case InvalidAST
+    case UnknownOperator
 }
 
 public class MathExpressionParser {

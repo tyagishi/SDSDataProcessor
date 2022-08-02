@@ -131,6 +131,8 @@ public enum Token: CustomDebugStringConvertible, CaseIterable, Equatable {
                 return "*"
             case "/":
                 return "/"
+            case "^":
+                return "^"
             default:
                 break
             }
@@ -170,7 +172,7 @@ extension CharacterSet {
     }
     static var operatorCharacters: CharacterSet {
         var ope = CharacterSet()
-        ope.insert(charactersIn: "+-*/")
+        ope.insert(charactersIn: "+-*/^")
         return ope
     }
     static var openBracketsCharacters: CharacterSet {

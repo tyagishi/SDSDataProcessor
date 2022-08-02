@@ -65,8 +65,10 @@ extension MathExpression {
                 return leftValue * rightValue
             case "/":
                 return leftValue / rightValue
+            case "^":
+                return pow(leftValue, rightValue)
             default:
-                throw Error.InvalidAST
+                throw Error.UnknownOperator
             }
         } else {
             throw Error.InvalidAST
