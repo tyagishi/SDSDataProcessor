@@ -82,15 +82,11 @@ public class MathExpressionParser {
         }
 
         if addAsRightChild {
-            // merge existing mostRightNode as Left Child
-            guard let mergeNodeParent = mergeNode.parent else {
-                // should be single node math expression (i.e. numeric)
-                let newExpression = MathExpression(value: opeToken, left: mergeNode, right: addNode)
-                return newExpression
-            }
+            // merge existing mostRightNode as Right Child
+            let mergeNodeParent = mergeNode.parent
             let newExpression = MathExpression(value: opeToken, left: mergeNode, right: addNode)
-            mergeNodeParent.setRight(newExpression)
-            return topNode
+            mergeNodeParent?.setRight(newExpression)
+            return newExpression.rootNode
         } else {
             mergeNode = mergeNode.parent!
             let mergeNodeParent = mergeNode.parent
