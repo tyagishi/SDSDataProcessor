@@ -33,21 +33,17 @@ final class MathExpressionParser_Tests: XCTestCase {
         XCTAssertEqual(topToken, .Operator("+"))
 
         let leftNode = try XCTUnwrap(expression.left)
-        let leftToken = leftNode.token
-        XCTAssertEqual(leftToken, .Operator("+"))
-        
-        let leftLeftNode = try XCTUnwrap(leftNode.left)
-        let leftLeftToken = leftLeftNode.token
-        XCTAssertEqual(leftLeftToken, .Numeric(1.0))
-        
-        let leftRightNode = try XCTUnwrap(leftNode.right)
-        let leftRightToken = leftRightNode.token
-        XCTAssertEqual(leftRightToken, .Numeric(1.1))
+        XCTAssertEqual(leftNode.token, .Operator("+"))
 
         let rightNode = try XCTUnwrap(expression.right)
-        let rightToken = rightNode.token
-        XCTAssertEqual(rightToken, .Numeric(1.2))
-        
+        XCTAssertEqual(rightNode.token, .Numeric(1.2))
+
+        let leftLeftNode = try XCTUnwrap(leftNode.left)
+        XCTAssertEqual(leftLeftNode.token, .Numeric(1))
+
+        let leftRightNode = try XCTUnwrap(leftNode.right)
+        XCTAssertEqual(leftRightNode.token, .Numeric(1.1))
+
         XCTAssertEqual(try expression.calc(), 3.3)
     }
 
@@ -82,20 +78,16 @@ final class MathExpressionParser_Tests: XCTestCase {
         XCTAssertEqual(topToken, .Operator("*"))
 
         let leftNode = try XCTUnwrap(expression.left)
-        let leftToken = leftNode.token
-        XCTAssertEqual(leftToken, .Numeric(1.0))
+        XCTAssertEqual(leftNode.token, .Operator("*"))
         
-        let rightNode = try XCTUnwrap(expression.right)
-        let rightToken = rightNode.token
-        XCTAssertEqual(rightToken, .Operator("*"))
+        let leftLeftNode = try XCTUnwrap(leftNode.left)
+        XCTAssertEqual(leftLeftNode.token, .Numeric(1))
 
-        let rightLeftNode = try XCTUnwrap(rightNode.left)
-        let rightLeftToken = rightLeftNode.token
-        XCTAssertEqual(rightLeftToken, .Numeric(1.1))
-        
-        let rightRightNode = try XCTUnwrap(rightNode.right)
-        let rightRightToken = rightRightNode.token
-        XCTAssertEqual(rightRightToken, .Numeric(1.2))
+        let leftRightNode = try XCTUnwrap(leftNode.right)
+        XCTAssertEqual(leftRightNode.token, .Numeric(1.1))
+
+        let rightNode = try XCTUnwrap(expression.right)
+        XCTAssertEqual(rightNode.token, .Numeric(1.2))
         
         XCTAssertEqual(try expression.calc(), 1.32)
     }
@@ -136,6 +128,7 @@ final class MathExpressionParser_Tests: XCTestCase {
 
         let expression = try XCTUnwrap(sut.parse(tokens))
         XCTAssertNotNil(expression)
+        XCTAssertEqual(expression.token, .Operator("+"))
 
         let leftNode = try XCTUnwrap(expression.left)
         let leftToken = leftNode.token
@@ -211,20 +204,18 @@ final class MathExpressionParser_Tests: XCTestCase {
 
         let leftLeftNode = try XCTUnwrap(leftNode.left)
         let leftLeftToken = leftLeftNode.token
-        XCTAssertEqual(leftLeftToken, .Numeric(1.0))
+        XCTAssertEqual(leftLeftToken, .Operator("*"))
                        
         let leftRightNode = try XCTUnwrap(leftNode.right)
         let leftRightToken = leftRightNode.token
-        XCTAssertEqual(leftRightToken, .Operator("*"))
+        XCTAssertEqual(leftRightToken, .Numeric(2))
         
-        let leftRightLeftNode = try XCTUnwrap(leftRightNode.left)
-        let leftRightLeftToken = leftRightLeftNode.token
-        XCTAssertEqual(leftRightLeftToken, .Numeric(4))
+        let leftLeftLeftNode = try XCTUnwrap(leftLeftNode.left)
+        XCTAssertEqual(leftLeftLeftNode.token, .Numeric(1))
 
-        let leftRightRightNode = try XCTUnwrap(leftRightNode.right)
-        let leftRightRightToken = leftRightRightNode.token
-        XCTAssertEqual(leftRightRightToken, .Numeric(2))
-                       
+        let leftLeftRightNode = try XCTUnwrap(leftLeftNode.right)
+        XCTAssertEqual(leftLeftRightNode.token, .Numeric(4))
+
         let rightNode = try XCTUnwrap(expression.right)
         let rightToken = rightNode.token
         XCTAssertEqual(rightToken, .Numeric(3))

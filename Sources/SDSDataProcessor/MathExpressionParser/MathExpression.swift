@@ -32,6 +32,11 @@ extension MathExpression {
         guard let right = self.right else { return self }
         return right.mostRightNode()
     }
+    public func mostRightOperatorNode() -> MathExpression? {
+        let mostRightNode = mostRightNode() 
+        guard let parentOperatorNode = mostRightNode.parent else { return nil }
+        return parentOperatorNode
+    }
 }
 
 extension MathExpression {

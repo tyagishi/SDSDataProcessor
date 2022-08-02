@@ -69,6 +69,24 @@ public enum Token: CustomDebugStringConvertible, CaseIterable, Equatable {
         }
     }
     
+    var operatorPriority: Int {
+        switch self {
+        case .Operator(let str):
+            switch str {
+            case "+", "-":
+                return 0
+            case "*", "/":
+                return 50
+            case "^":
+                return 100
+            default:
+                return 0
+            }
+        default:
+            return 0
+        }
+    }
+    
     var isNumeric: Bool {
         switch self {
         case .Numeric(_):

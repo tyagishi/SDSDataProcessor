@@ -55,15 +55,53 @@ public class MathExpressionParser {
         return workingStack[0]
     }
     
-    // +-演算子は、新しいオペレータをツリーのトップにする
+    // +-演算子は、一番右のノードを新しいオペレータで置き換える
     //   +             ->       +
-    //  1 2  <- + 3           +   3
-    //                       1 2
-    //
+    //  1 2  <- + 3           1   +
+    //                           2 3
+    // */^ 演算子を新規ノード演算子として追加する時も 一番右の演算子(以下の場合 +)の優先度(既存演算子優先度)が低ければ 同じ
     //   +             ->      +
     //  1 2  <- * 3          1   *
     //                          2 3
-    // 以下の考察から、＊／ 演算子は、一番右の数値ノードを 数値,演算子,新規数値 のノードで置き換えれば良いハズ
+    // では、既存演算子の優先度が高い時どうするか？以下のように、該当演算子を左子供に持ち、新規演算子をトップノードとしてもつような Expression を作成する
+    //   *               ->       +
+    //  1 2   <- + 3            *   3
+    //                         1 2
+
+
+    func mergeExpression(topNode: MathExpression, opeNode: MathExpression, addNode: MathExpression) throws -> MathExpression {
+        let opeToken = opeNode.value
+        guard opeToken.isOperator else { throw Error.InvalidToken }
+        
+        var addAsRightChild = true // default merge
+        
+        var mergeNode = topNode.mostRightNode()
+        if let compareOperatorNode = mergeNode.parent,
+           opeNode.token.operatorPriority <= compareOperatorNode.token.operatorPriority {
+            addAsRightChild = false
+        }
+
+        if addAsRightChild {
+            // merge existing mostRightNode as Left Child
+            guard let mergeNodeParent = mergeNode.parent else {
+                // should be single node math expression (i.e. numeric)
+                let newExpression = MathExpression(value: opeToken, left: mergeNode, right: addNode)
+                return newExpression
+            }
+            let newExpression = MathExpression(value: opeToken, left: mergeNode, right: addNode)
+            mergeNodeParent.setRight(newExpression)
+            return topNode
+        } else {
+            mergeNode = mergeNode.parent!
+            let mergeNodeParent = mergeNode.parent
+            let newExpression = MathExpression(value: opeToken, left: mergeNode, right: addNode)
+            mergeNodeParent?.setLeft(newExpression)
+            return newExpression.rootNode
+        }
+        throw Error.InvalidAST
+    }
+    
+    //　以下、検討メモ
     //   +              ->     +
     //  1 +                   1 +
     //   2 3   <- * 4          2 *
@@ -81,27 +119,4 @@ public class MathExpressionParser {
     //   *              ->      *
     //  * 3  <- *4            *   *
     // 1 2                   1 2 3 4
-
-    func mergeExpression(topNode: MathExpression, opeNode: MathExpression, addNode: MathExpression) throws -> MathExpression {
-        let opeToken = opeNode.value
-        guard opeToken.isOperator else { throw Error.InvalidToken }
-        
-        if opeToken.isPlusMinus {
-            // create new expression as top node
-            let newExpression = MathExpression(value: opeToken, left: topNode, right: addNode)
-            return newExpression
-        } else {
-            // replace most right child with new expression
-            let replaceNode = topNode.mostRightNode()
-            guard let replaceNodeParent = replaceNode.parent else {
-                // should be single node math expression (i.e. numeric)
-                let newExpression = MathExpression(value: opeToken, left: replaceNode, right: addNode)
-                return newExpression
-            }
-            let newExpression = MathExpression(value: opeToken, left: replaceNode, right: addNode)
-            replaceNodeParent.setRight(newExpression)
-            return topNode
-        }
-        throw Error.InvalidAST
-    }
 }

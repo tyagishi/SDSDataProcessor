@@ -44,4 +44,34 @@ final class MathExpressionParser_PowerTests: XCTestCase {
 
         XCTAssertEqual(try expression.calc(), 12.0)
     }
+    
+    func test_power_operatorOrder() async throws {
+        let tokens = [Token.Numeric(2.0), Token.Operator("*"), Token.Numeric(2.0), Token.Operator("^"), Token.Numeric(3.0), Token.Operator("*"), Token.Numeric(2.0)]
+        let sut = MathExpressionParser()
+        let expression = try XCTUnwrap(sut.parse(tokens))
+        
+        let topToken = try XCTUnwrap(expression.token)
+        XCTAssertEqual(topToken, .Operator("*"))
+
+        let leftNode = try XCTUnwrap(expression.left)
+        XCTAssertEqual(leftNode.token, .Numeric(2.0))
+        
+        let rightNode = try XCTUnwrap(expression.right)
+        XCTAssertEqual(rightNode.token, .Operator("*"))
+        
+        let rightLeftNode = try XCTUnwrap(rightNode.left)
+        XCTAssertEqual(rightLeftNode.token, .Operator("^"))
+        
+        let rightLeftLeftNode = try XCTUnwrap(rightLeftNode.left)
+        XCTAssertEqual(rightLeftLeftNode.token, .Numeric(2.0))
+        let rightLeftRightNode = try XCTUnwrap(rightLeftNode.right)
+        XCTAssertEqual(rightLeftRightNode.token, .Numeric(3.0))
+
+        let rightRightNode = try XCTUnwrap(rightNode.right)
+        XCTAssertEqual(rightRightNode.token, .Numeric(2.0))
+                       
+        XCTAssertEqual(try expression.calc(), 32.0)
+
+    }
+
 }
