@@ -95,7 +95,7 @@ public class MathExpressionParser {
             mergeNode = mergeNode.parent!
             let mergeNodeParent = mergeNode.parent
             let newExpression = MathExpression(value: opeToken, left: mergeNode, right: addNode)
-            mergeNodeParent?.setLeft(newExpression)
+            mergeNodeParent?.setRight(newExpression)
             return newExpression.rootNode
         }
         throw Error.InvalidAST
