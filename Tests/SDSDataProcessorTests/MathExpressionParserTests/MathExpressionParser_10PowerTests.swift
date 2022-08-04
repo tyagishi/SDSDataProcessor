@@ -1,7 +1,7 @@
 @testable import SDSDataProcessor
 import XCTest
 
-final class MathExpressionParser_PowerTests: XCTestCase {
+final class MathExpressionParser_10PowerTests: XCTestCase {
 
     func test_power_simple01() async throws {
         let tokens = [Token.Numeric(2.0), Token.Operator("^"), Token.Numeric(3.0)]

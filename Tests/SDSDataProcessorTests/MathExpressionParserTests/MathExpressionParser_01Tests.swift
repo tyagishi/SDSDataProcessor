@@ -1,7 +1,7 @@
 @testable import SDSDataProcessor
 import XCTest
 
-final class MathExpressionParser_Tests: XCTestCase {
+final class MathExpressionParser_01Tests: XCTestCase {
 
     func test_parse_3Tokens_successToParse() throws {
         let tokens = [Token.Numeric(1.0), Token.Operator("+"), Token.Numeric(2.0)]

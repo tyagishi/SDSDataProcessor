@@ -1,7 +1,7 @@
 @testable import SDSDataProcessor
 import XCTest
 
-final class MathExpressionParserWithBrackets_Tests: XCTestCase {
+final class MathExpressionParser_06BracketsTests: XCTestCase {
 
     func test_parse_brankets_one() throws {
         let tokens = [Token.OpenBracket, Token.Numeric(1.0), Token.CloseBracket]

@@ -24,17 +24,20 @@ public class MathExpressionParser {
         guard tokens.count > 0 else { throw Error.InvalidExpression  }
         var workingStack:[MathExpression] = []
         var bracketStack:[[MathExpression]] = []
+        var necessaryCloseBrackets = 0
         
         for token in tokens {
             if token.isOpenBracket {
                 if workingStack.count > 0 { bracketStack.append(workingStack) }
                 workingStack = []
+                necessaryCloseBrackets += 1
             } else if token.isCloseBracket {
-                guard workingStack.count == 1 else { throw Error.InvalidExpression }
+                guard workingStack.count == 1 else { throw Error.InvalidAST }
                 let lastExpression = workingStack[0]
                 let bracketedToken = MathExpression(value: .Bracketed(lastExpression))
                 workingStack = bracketStack.popLast() ?? []
                 workingStack.append(bracketedToken)
+                necessaryCloseBrackets -= 1
             } else {
                 let tokenNode = MathExpression(value: token)
                 workingStack.append(tokenNode)
@@ -43,7 +46,7 @@ public class MathExpressionParser {
             if workingStack.count == 3 {
                 let left = workingStack[0]
                 let opeNode = workingStack[1]
-                guard opeNode.value.isOperator else { throw Error.InvalidExpression }
+                guard opeNode.value.isOperator else { throw Error.InvalidAST }
                 let right = workingStack[2]
 
                 let newExpression = try mergeExpression(topNode: left, opeNode: opeNode, addNode: right)
@@ -51,7 +54,9 @@ public class MathExpressionParser {
                 workingStack.append(newExpression)
             }
         }
-        guard workingStack.count == 1 else { throw Error.InvalidExpression }
+        guard necessaryCloseBrackets == 0 else { throw Error.InvalidAST }
+        guard bracketStack.count == 0 else { throw Error.InvalidAST }
+        guard workingStack.count == 1 else { throw Error.InvalidAST }
         return workingStack[0]
     }
     

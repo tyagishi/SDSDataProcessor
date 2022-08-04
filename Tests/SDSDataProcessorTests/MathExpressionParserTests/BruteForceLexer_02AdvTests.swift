@@ -1,7 +1,7 @@
 @testable import SDSDataProcessor
 import XCTest
 
-final class BruteForceLexerAdvTests: XCTestCase {
+final class BruteForceLexer_02AdvTests: XCTestCase {
 
     func test_PlusOne() throws {
         let sut = BruteForceLexer()
