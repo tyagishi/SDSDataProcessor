@@ -8,12 +8,13 @@
 import Foundation
 
 public enum Token: CustomDebugStringConvertible, CaseIterable, Equatable {
-    static public var allCases: [Token] = [.Numeric(0.0), .Operator("+"), .OpenBracket, .CloseBracket]
+    static public var allCases: [Token] = [.Numeric(0.0), .Operator("+"), .OpenBracket, .CloseBracket, .function("")]
     
     static let groupingSeparator = Locale.current.groupingSeparator ?? ""
     case Numeric(Double)
     case Operator(String)
     case OpenBracket
+    case function(String)
     case CloseBracket
     case Bracketed(MathExpression)
 
@@ -30,6 +31,8 @@ public enum Token: CustomDebugStringConvertible, CaseIterable, Equatable {
             return .OpenBracket
         case .CloseBracket:
             return .CloseBracket
+        case .function(_):
+            return .function(string)
         case .Bracketed(_):
             fatalError()
         }
@@ -45,6 +48,8 @@ public enum Token: CustomDebugStringConvertible, CaseIterable, Equatable {
             return CharacterSet.openBracketsCharacters
         case .CloseBracket:
             return CharacterSet.closeBracketsCharacters
+        case .function(_):
+            return CharacterSet.letters
         case .Bracketed(_):
             return CharacterSet() // empty
         }
@@ -161,6 +166,8 @@ public enum Token: CustomDebugStringConvertible, CaseIterable, Equatable {
             return "Close"
         case .Bracketed(let expression):
             return "Bracketed \(expression)"
+        case .function(let funcName):
+            return "Function_\(funcName)"
         }
     }
 }

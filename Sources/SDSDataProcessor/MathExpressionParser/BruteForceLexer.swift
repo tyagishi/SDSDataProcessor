@@ -14,6 +14,8 @@ extension Token {
         switch lastToken {
         case .Numeric(_), .CloseBracket:
             return [.Operator("+"), .OpenBracket, .CloseBracket]
+        case .function(_):
+            return [.OpenBracket]
         default:
             return Token.allCases
         }
