@@ -39,10 +39,16 @@ extension MathExpression {
                 return self.token.doubleValue!
             } else if case Token.function(let name, let argument) = self.token {
                 let value = try argument.calc()
-                if name == "sin" {
+                switch name {
+                case "sin":
                     return sin(value / 180.0 * Double.pi)
+                case "cos":
+                    return cos(value / 180.0 * Double.pi)
+                case "tan":
+                    return tan(value / 180.0 * Double.pi)
+                default:
+                    throw Error.unknownFunction
                 }
-                throw Error.unknownFunction
             } else if let expression = self.token.expression {
                 return try expression.calc()
             }

@@ -16,6 +16,19 @@ final class MathExpressionParser_20FuncTests: XCTestCase {
         XCTAssertEqual(try expression.calc(), 1.0 / sqrt(2.0), accuracy: 0.001)
     }
     
+    func test_func_cos45() async throws {
+        let tokens = [Token.functionName("cos"), Token.openBracket, Token.numeric(45.0), Token.closeBracket]
+        let sut = MathExpressionParser()
+        let expression = try XCTUnwrap(sut.parse(tokens))
+        
+        let topToken = try XCTUnwrap(expression.token)
+        XCTAssertEqual(topToken.functionName, "cos")
+        let argument = try XCTUnwrap(topToken.functionArgument)
+        
+        XCTAssertEqual(argument.token, .numeric(45))
+        XCTAssertEqual(try expression.calc(), cos(45.0 / 180 * Double.pi), accuracy: 0.001)
+    }
+    
     func test_func_sinCalcWithArgumentCalc() async throws {
         let tokens = [Token.functionName("sin"), Token.openBracket, Token.numeric(25.0), Token.binaryOperator("+"), Token.numeric(20), Token.closeBracket]
         let sut = MathExpressionParser()
