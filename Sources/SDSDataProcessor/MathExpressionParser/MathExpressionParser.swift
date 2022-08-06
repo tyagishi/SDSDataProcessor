@@ -14,6 +14,7 @@ public enum MathExpressionParserError: Error {
     case invalidAST
     case unknownOperator
     case unbalancedBrackets
+    case unknownFunction
 }
 
 public class MathExpressionParser {

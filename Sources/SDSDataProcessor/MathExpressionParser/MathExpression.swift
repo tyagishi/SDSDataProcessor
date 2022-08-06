@@ -37,6 +37,12 @@ extension MathExpression {
         if self.left == nil, self.right == nil {
             if self.token.isNumeric {
                 return self.token.doubleValue!
+            } else if case Token.function(let name, let argument) = self.token {
+                let value = try argument.calc()
+                if name == "sin" {
+                    return sin(value / 180.0 * Double.pi)
+                }
+                throw Error.unknownFunction
             } else if let expression = self.token.expression {
                 return try expression.calc()
             }
