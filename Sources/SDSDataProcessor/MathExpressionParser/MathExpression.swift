@@ -8,20 +8,6 @@
 import Foundation
 import SDSDataStructure
 
-//public indirect enum BinaryTree<T> {
-//    case node(_ left: BinaryTree<T>,_ token: T,_ right: BinaryTree<T>)
-//    case brancket(_ node: BinaryTree<T>)
-//    case empty
-//}
-//
-//extension BinaryTree: Equatable {
-//    public static func == (lhs: BinaryTree<T>, rhs: BinaryTree<T>) -> Bool {
-//        if case BinaryTree.empty = lhs,
-//           case BinaryTree.empty = rhs { return true }
-//        return false
-//    }
-//}
-
 public typealias MathExpression = BinaryTreeNode<Token>
 
 extension MathExpression {
@@ -54,7 +40,7 @@ extension MathExpression {
             } else if let expression = self.token.expression {
                 return try expression.calc()
             }
-            throw Error.InvalidAST
+            throw Error.invalidAST
         }
         if let left = self.left, let right = self.right,
            let opeString = self.token.opeString {
@@ -73,34 +59,10 @@ extension MathExpression {
             case "^":
                 return pow(leftValue, rightValue)
             default:
-                throw Error.UnknownOperator
+                throw Error.unknownOperator
             }
         } else {
-            throw Error.InvalidAST
+            throw Error.invalidAST
         }
-//        if myLeft == .empty {
-//            guard myRight == .empty else { throw Error.InvalidAST }
-//            guard myNode.isNumeric else { throw Error.InvalidAST }
-//            if let dValue = myNode.doubleValue { return dValue }
-//            throw Error.InvalidToken
-//        }
-//
-//        let leftValue = try myLeft.calc()
-//        let rightValue = try myRight.calc()
-//
-//        guard let opeString = myNode.opeString else { throw Error.InvalidAST }
-//        switch opeString {
-//        case "+":
-//            return leftValue + rightValue
-//        case "-":
-//            return leftValue - rightValue
-//        case "*":
-//            return leftValue * rightValue
-//        case "/":
-//            return leftValue / rightValue
-//        default:
-//            throw Error.InvalidAST
-//        }
-        return 99.0
     }
 }

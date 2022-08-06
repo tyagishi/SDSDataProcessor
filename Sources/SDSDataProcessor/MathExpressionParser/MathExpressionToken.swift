@@ -8,56 +8,62 @@
 import Foundation
 
 public enum Token: CustomDebugStringConvertible, CaseIterable, Equatable {
-    static public var allCases: [Token] = [.Numeric(0.0), .Operator("+"), .OpenBracket, .CloseBracket, .function("")]
+    static public var allCases: [Token] = [.numeric(0.0), .binaryOperator("+"), .openBracket, .closeBracket, .function("")]
     
     static let groupingSeparator = Locale.current.groupingSeparator ?? ""
-    case Numeric(Double)
-    case Operator(String)
-    case OpenBracket
+
+    // lexer/parser common
+    case numeric(Double)
+    case binaryOperator(String)
+
+    // only for lexer
+    case openBracket
     case function(String)
-    case CloseBracket
-    case Bracketed(MathExpression)
+    case closeBracket
+    
+    // only for parser
+    case bracketed(MathExpression)
 
     func instanciateWithValue(_ string: String) -> Token? {
         switch self {
-        case .Numeric(_):
+        case .numeric(_):
             if let dValue = Double(string.filter({ !(Token.groupingSeparator.contains($0)) })) {
-                return .Numeric(dValue)
+                return .numeric(dValue)
             }
             return nil
-        case .Operator(_):
-            return .Operator(string)
-        case .OpenBracket:
-            return .OpenBracket
-        case .CloseBracket:
-            return .CloseBracket
+        case .binaryOperator(_):
+            return .binaryOperator(string)
+        case .openBracket:
+            return .openBracket
+        case .closeBracket:
+            return .closeBracket
         case .function(_):
             return .function(string)
-        case .Bracketed(_):
+        case .bracketed(_):
             fatalError()
         }
     }
     
     var scanCharacterSet: CharacterSet {
         switch self {
-        case .Numeric(_):
+        case .numeric(_):
             return CharacterSet.numericCharacters
-        case .Operator(_):
+        case .binaryOperator(_):
             return CharacterSet.operatorCharacters
-        case .OpenBracket:
+        case .openBracket:
             return CharacterSet.openBracketsCharacters
-        case .CloseBracket:
+        case .closeBracket:
             return CharacterSet.closeBracketsCharacters
         case .function(_):
             return CharacterSet.letters
-        case .Bracketed(_):
+        case .bracketed(_):
             return CharacterSet() // empty
         }
     }
     
     var doubleValue: Double? {
         switch self {
-        case .Numeric(let double):
+        case .numeric(let double):
             return double
         default:
             return nil
@@ -66,7 +72,7 @@ public enum Token: CustomDebugStringConvertible, CaseIterable, Equatable {
     
     var opeString: Character? {
         switch self {
-        case .Operator(let string):
+        case .binaryOperator(let string):
             guard string.count == 1 else { return nil }
             return string.first!
         default:
@@ -76,7 +82,7 @@ public enum Token: CustomDebugStringConvertible, CaseIterable, Equatable {
     
     var operatorPriority: Int {
         switch self {
-        case .Operator(let str):
+        case .binaryOperator(let str):
             switch str {
             case "+", "-":
                 return 0
@@ -94,7 +100,7 @@ public enum Token: CustomDebugStringConvertible, CaseIterable, Equatable {
     
     var isNumeric: Bool {
         switch self {
-        case .Numeric(_):
+        case .numeric(_):
             return true
         default:
             return false
@@ -102,21 +108,28 @@ public enum Token: CustomDebugStringConvertible, CaseIterable, Equatable {
     }
     
     var isOpenBracket: Bool {
-        if case .OpenBracket = self {
+        if case .openBracket = self {
             return true
         }
         return false
     }
     
     var isCloseBracket: Bool {
-        if case .CloseBracket = self {
+        if case .closeBracket = self {
             return true
         }
         return false
     }
     
     var isBracketed: Bool {
-        if case .Bracketed(_) = self {
+        if case .bracketed(_) = self {
+            return true
+        }
+        return false
+    }
+    
+    var isFunction: Bool {
+        if case .function(_) = self {
             return true
         }
         return false
@@ -124,7 +137,7 @@ public enum Token: CustomDebugStringConvertible, CaseIterable, Equatable {
     
     var expression: MathExpression? {
         switch self {
-        case .Bracketed(let expression):
+        case .bracketed(let expression):
             return expression
         default:
             return nil
@@ -142,9 +155,9 @@ public enum Token: CustomDebugStringConvertible, CaseIterable, Equatable {
     
     public var debugDescription: String {
         switch self {
-        case .Numeric(let value):
+        case .numeric(let value):
             return "Numeric: \(value)"
-        case .Operator(let symbol):
+        case .binaryOperator(let symbol):
             switch symbol {
             case "+":
                 return "+"
@@ -160,11 +173,11 @@ public enum Token: CustomDebugStringConvertible, CaseIterable, Equatable {
                 break
             }
             fatalError("unknown operator")
-        case .OpenBracket:
+        case .openBracket:
             return "Open"
-        case .CloseBracket:
+        case .closeBracket:
             return "Close"
-        case .Bracketed(let expression):
+        case .bracketed(let expression):
             return "Bracketed \(expression)"
         case .function(let funcName):
             return "Function_\(funcName)"

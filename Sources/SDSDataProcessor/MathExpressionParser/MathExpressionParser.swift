@@ -9,10 +9,11 @@ import Foundation
 
 
 public enum MathExpressionParserError: Error {
-    case InvalidToken
-    case InvalidExpression
-    case InvalidAST
-    case UnknownOperator
+    case invalidToken
+    case invalidExpression
+    case invalidAST
+    case unknownOperator
+    case unbalancedBrackets
 }
 
 public class MathExpressionParser {
@@ -21,9 +22,10 @@ public class MathExpressionParser {
     public init() {}
     
     public func parse(_ tokens:[Token]) throws -> MathExpression {
-        guard tokens.count > 0 else { throw Error.InvalidExpression  }
+        guard tokens.count > 0 else { throw Error.invalidExpression  }
         var workingStack:[MathExpression] = []
         var bracketStack:[[MathExpression]] = []
+        //var function: Token? = nil
         var necessaryCloseBrackets = 0
         
         for token in tokens {
@@ -32,12 +34,15 @@ public class MathExpressionParser {
                 workingStack = []
                 necessaryCloseBrackets += 1
             } else if token.isCloseBracket {
-                guard workingStack.count == 1 else { throw Error.InvalidAST }
+                guard workingStack.count == 1 else { throw Error.invalidAST }
                 let lastExpression = workingStack[0]
-                let bracketedToken = MathExpression(value: .Bracketed(lastExpression))
+                let bracketedToken = MathExpression(value: .bracketed(lastExpression))
                 workingStack = bracketStack.popLast() ?? []
                 workingStack.append(bracketedToken)
                 necessaryCloseBrackets -= 1
+//            } else if token.isFunction {
+//                guard function == nil else { throw Error.InvalidAST } // function after function ?
+//                function = token
             } else {
                 let tokenNode = MathExpression(value: token)
                 workingStack.append(tokenNode)
@@ -46,7 +51,7 @@ public class MathExpressionParser {
             if workingStack.count == 3 {
                 let left = workingStack[0]
                 let opeNode = workingStack[1]
-                guard opeNode.value.isOperator else { throw Error.InvalidAST }
+                guard opeNode.value.isOperator else { throw Error.invalidAST }
                 let right = workingStack[2]
 
                 let newExpression = try mergeExpression(topNode: left, opeNode: opeNode, addNode: right)
@@ -54,9 +59,9 @@ public class MathExpressionParser {
                 workingStack.append(newExpression)
             }
         }
-        guard necessaryCloseBrackets == 0 else { throw Error.InvalidAST }
-        guard bracketStack.count == 0 else { throw Error.InvalidAST }
-        guard workingStack.count == 1 else { throw Error.InvalidAST }
+        guard necessaryCloseBrackets == 0 else { throw Error.invalidAST }
+        guard bracketStack.count == 0 else { throw Error.unbalancedBrackets }
+        guard workingStack.count == 1 else { throw Error.invalidAST }
         return workingStack[0]
     }
     
@@ -76,7 +81,7 @@ public class MathExpressionParser {
 
     func mergeExpression(topNode: MathExpression, opeNode: MathExpression, addNode: MathExpression) throws -> MathExpression {
         let opeToken = opeNode.value
-        guard opeToken.isOperator else { throw Error.InvalidToken }
+        guard opeToken.isOperator else { throw Error.invalidToken }
         
         var addAsRightChild = true // default merge
         
@@ -99,7 +104,7 @@ public class MathExpressionParser {
             mergeNodeParent?.setRight(newExpression)
             return newExpression.rootNode
         }
-        throw Error.InvalidAST
+        throw Error.invalidAST
     }
     
     //　以下、検討メモ

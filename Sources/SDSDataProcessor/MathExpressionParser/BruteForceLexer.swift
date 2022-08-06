@@ -10,12 +10,11 @@ import Foundation
 extension Token {
     static func possibleTokens(pastTokens:[Token]) -> [Token] {
         guard let lastToken = pastTokens.last else { return Token.allCases }
-        
         switch lastToken {
-        case .Numeric(_), .CloseBracket:
-            return [.Operator("+"), .OpenBracket, .CloseBracket]
+        case .numeric(_), .closeBracket:
+            return [.binaryOperator("+"), .openBracket, .closeBracket]
         case .function(_):
-            return [.OpenBracket]
+            return [.openBracket]
         default:
             return Token.allCases
         }
@@ -36,7 +35,7 @@ public class BruteForceLexer {
 
         consumeWhitespace(scanner)
         while !scanner.isAtEnd {
-            guard let token = scanToken(scanner, pastTokens: foundTokens) else { throw Error.InvalidToken }
+            guard let token = scanToken(scanner, pastTokens: foundTokens) else { throw Error.invalidToken }
             foundTokens.append(token)
             consumeWhitespace(scanner)
         }
@@ -45,7 +44,7 @@ public class BruteForceLexer {
 
     func scanToken(_ scanner: Scanner, pastTokens: [Token]) -> Token? {
         for token in Token.possibleTokens(pastTokens: pastTokens) {
-            if case .Numeric(_) = token,
+            if case .numeric(_) = token,
                let numericToken = scanNumeric(scanner) {
                 return numericToken
             } else {
@@ -64,12 +63,12 @@ public class BruteForceLexer {
         if let leadChar = scanner.scanCharacter(),
            CharacterSet.plusMinus.contains( Unicode.Scalar( leadChar.unicodeScalars.map({$0.value}).reduce(0, +) )!),
            let scanString = scanner.scanCharacters(from: CharacterSet.strictNumericCharacters),
-           let newToken = Token.Numeric(1.0).instanciateWithValue(String(leadChar).appending(scanString)) {
+           let newToken = Token.numeric(1.0).instanciateWithValue(String(leadChar).appending(scanString)) {
             return newToken
         } else {
             scanner.currentIndex = startPosition
             if let scanString = scanner.scanCharacters(from: CharacterSet.strictNumericCharacters),
-               let newToken = Token.Numeric(1.0).instanciateWithValue(scanString) {
+               let newToken = Token.numeric(1.0).instanciateWithValue(scanString) {
                 return newToken
             }
         }

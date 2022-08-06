@@ -39,4 +39,13 @@ final class MathExpressionParser_99BugTests: XCTestCase {
         let result = try XCTUnwrap(expression.calc())
         XCTAssertEqual(result, 6, accuracy: 0.001)
     }
+    func test_BugAt20220802() throws {
+        let sut = BruteForceLexer()
+        let tokens = try XCTUnwrap(sut.lex("(1+"))
+        XCTAssertEqual(tokens.count, 7)
+        let sutParser = MathExpressionParser()
+        let expression = try XCTUnwrap(sutParser.parse(tokens))
+        let result = try XCTUnwrap(expression.calc())
+        XCTAssertEqual(result, 6, accuracy: 0.001)
+    }
 }
