@@ -137,6 +137,21 @@ public enum Token: CustomDebugStringConvertible, CaseIterable, Equatable {
         }
         return false
     }
+    var functionName: String? {
+        switch self {
+        case .functionName(let string), .function(let string,_):
+            return string
+        default:
+            return nil
+        }
+    }
+    var functionArgument: MathExpression? {
+        if case .function(_,let expression) = self {
+            return expression
+        }
+        return nil
+
+    }
     
     var expression: MathExpression? {
         switch self {

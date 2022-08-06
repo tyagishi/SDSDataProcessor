@@ -56,18 +56,17 @@ public class MathExpressionParser {
                 // check function or just brancketed?
                 var stackedExpression = bracketStack.popLast() ?? [] // maybe first element is openBracket
                 if let last = stackedExpression.last,
-                   last.token.isFunction {
-                    print("function")
+                   let functionName = last.token.functionName {
+                    stackedExpression.removeLast() // remove function token
+                    workingStack = stackedExpression
+                    let functionToken = MathExpression(value: .function(functionName, currentExpression))
+                    workingStack.append(functionToken)
                 } else {
                     workingStack = stackedExpression
                     let bracketedToken = MathExpression(value: .bracketed(currentExpression))
                     workingStack.append(bracketedToken)
                 }
-                //workingStack = bracketStack.popLast() ?? []
                 necessaryCloseBrackets -= 1
-//            } else if token.isFunction {
-//                guard function == nil else { throw Error.InvalidAST } // function after function ?
-//                function = token
             } else {
                 let tokenNode = MathExpression(value: token)
                 workingStack.append(tokenNode)

@@ -9,19 +9,11 @@ final class MathExpressionParser_20FuncTests: XCTestCase {
         let expression = try XCTUnwrap(sut.parse(tokens))
         
         let topToken = try XCTUnwrap(expression.token)
-        XCTAssertEqual(topToken, .functionName("sin"))
-
-        let leftNode = try XCTUnwrap(expression.left)
-        let leftToken = leftNode.token
-        XCTAssertEqual(leftToken, .numeric(2.0))
-        XCTAssertEqual(leftNode.isLeaf, true)
+        XCTAssertEqual(topToken.functionName, "sin")
+        let argument = try XCTUnwrap(topToken.functionArgument)
         
-        let rightNode = try XCTUnwrap(expression.right)
-        let rightToken = rightNode.token
-        XCTAssertEqual(rightToken, .numeric(3.0))
-        XCTAssertEqual(rightNode.isLeaf, true)
-
-        XCTAssertEqual(try expression.calc(), 8.0)
+        XCTAssertEqual(argument.token, .numeric(45))
+//        XCTAssertEqual(try expression.calc(), 8.0)
     }
     
     func test_func_sinAndbinaryOperator() async throws {
