@@ -17,7 +17,7 @@ final class MathExpressionParser_06BracketsTests: XCTestCase {
     }
 
     func test_parse_brankets() throws {
-        let tokens = [Token.openBracket, Token.numeric(1.0), Token.operator("+"), Token.numeric(1.0), Token.closeBracket]
+        let tokens = [Token.openBracket, Token.numeric(1.0), Token.binaryOperator("+"), Token.numeric(1.0), Token.closeBracket]
         let sut = MathExpressionParser()
 
         let expression = try XCTUnwrap(sut.parse(tokens))
@@ -26,18 +26,18 @@ final class MathExpressionParser_06BracketsTests: XCTestCase {
 
     func test_parse_branketsLeftSide_noEffectResult() throws {
         // ((1,+,2),+,3)
-        let tokens = [Token.openBracket, Token.numeric(1.0), Token.operator("+"), Token.numeric(2.0), Token.closeBracket, Token.operator("+"), Token.numeric(3.0)]
+        let tokens = [Token.openBracket, Token.numeric(1.0), Token.binaryOperator("+"), Token.numeric(2.0), Token.closeBracket, Token.binaryOperator("+"), Token.numeric(3.0)]
         let sut = MathExpressionParser()
         let expression = try XCTUnwrap(sut.parse(tokens))
 
         let topToken = try XCTUnwrap(expression.token)
-        XCTAssertEqual(topToken, .operator("+"))
+        XCTAssertEqual(topToken, .binaryOperator("+"))
 
         let leftNode = try XCTUnwrap(expression.left)
         let leftToken = leftNode.token
         XCTAssertTrue(leftToken.isBracketed)
         let bracketed = try XCTUnwrap(leftToken.expression)
-        XCTAssertEqual(bracketed.token, .operator("+"))
+        XCTAssertEqual(bracketed.token, .binaryOperator("+"))
         
         let bracketedLeft = try XCTUnwrap(bracketed.left)
         XCTAssertEqual(bracketedLeft.token, .numeric(1.0))
@@ -53,12 +53,12 @@ final class MathExpressionParser_06BracketsTests: XCTestCase {
 
     func test_parse_branketsRightSide_noEffectResult() throws {
         // (1,+,(2,+,3))
-        let tokens = [Token.numeric(1.0), Token.operator("+"), Token.openBracket, Token.numeric(2.0), Token.operator("+"), Token.numeric(3.0), Token.closeBracket]
+        let tokens = [Token.numeric(1.0), Token.binaryOperator("+"), Token.openBracket, Token.numeric(2.0), Token.binaryOperator("+"), Token.numeric(3.0), Token.closeBracket]
         let sut = MathExpressionParser()
         let expression = try XCTUnwrap(sut.parse(tokens))
 
         let topToken = try XCTUnwrap(expression.token)
-        XCTAssertEqual(topToken, .operator("+"))
+        XCTAssertEqual(topToken, .binaryOperator("+"))
         
         let leftToken = try XCTUnwrap(expression.left?.token)
         XCTAssertEqual(leftToken, .numeric(1.0))
@@ -67,7 +67,7 @@ final class MathExpressionParser_06BracketsTests: XCTestCase {
         XCTAssertTrue(rightNode.token.isBracketed)
         
         let bracketed = try XCTUnwrap(rightNode.token.expression)
-        XCTAssertEqual(bracketed.token, .operator("+"))
+        XCTAssertEqual(bracketed.token, .binaryOperator("+"))
         
         let bracketedLeft = try XCTUnwrap(bracketed.left)
         XCTAssertEqual(bracketedLeft.token, .numeric(2.0))
@@ -80,18 +80,18 @@ final class MathExpressionParser_06BracketsTests: XCTestCase {
 
     func test_parse_brankets_effectResult() throws {
         // ((1,+,2),*,3)
-        let tokens = [Token.openBracket, Token.numeric(1.0), Token.operator("+"), Token.numeric(2.0), Token.closeBracket, Token.operator("*"), Token.numeric(3.0)]
+        let tokens = [Token.openBracket, Token.numeric(1.0), Token.binaryOperator("+"), Token.numeric(2.0), Token.closeBracket, Token.binaryOperator("*"), Token.numeric(3.0)]
         let sut = MathExpressionParser()
         let expression = try XCTUnwrap(sut.parse(tokens))
 
         let topToken = try XCTUnwrap(expression.token)
-        XCTAssertEqual(topToken, .operator("*"))
+        XCTAssertEqual(topToken, .binaryOperator("*"))
         
         let leftNode = try XCTUnwrap(expression.left)
         XCTAssertTrue(leftNode.token.isBracketed)
         
         let bracketed = try XCTUnwrap(leftNode.token.expression)
-        XCTAssertEqual(bracketed.token, .operator("+"))
+        XCTAssertEqual(bracketed.token, .binaryOperator("+"))
 
         let bracketedLeft = try XCTUnwrap(bracketed.left)
         XCTAssertEqual(bracketedLeft.token, .numeric(1.0))

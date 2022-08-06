@@ -4,12 +4,12 @@ import XCTest
 final class MathExpressionParser_10PowerTests: XCTestCase {
 
     func test_power_simple01() async throws {
-        let tokens = [Token.numeric(2.0), Token.operator("^"), Token.numeric(3.0)]
+        let tokens = [Token.numeric(2.0), Token.binaryOperator("^"), Token.numeric(3.0)]
         let sut = MathExpressionParser()
         let expression = try XCTUnwrap(sut.parse(tokens))
         
         let topToken = try XCTUnwrap(expression.token)
-        XCTAssertEqual(topToken, .operator("^"))
+        XCTAssertEqual(topToken, .binaryOperator("^"))
 
         let leftNode = try XCTUnwrap(expression.left)
         let leftToken = leftNode.token
@@ -24,15 +24,15 @@ final class MathExpressionParser_10PowerTests: XCTestCase {
         XCTAssertEqual(try expression.calc(), 8.0)
     }
     func test_power_simple02() async throws {
-        let tokens = [Token.numeric(2.0), Token.operator("^"), Token.numeric(3.0), Token.operator("+"), Token.numeric(4.0)]
+        let tokens = [Token.numeric(2.0), Token.binaryOperator("^"), Token.numeric(3.0), Token.binaryOperator("+"), Token.numeric(4.0)]
         let sut = MathExpressionParser()
         let expression = try XCTUnwrap(sut.parse(tokens))
         
         let topToken = try XCTUnwrap(expression.token)
-        XCTAssertEqual(topToken, .operator("+"))
+        XCTAssertEqual(topToken, .binaryOperator("+"))
 
         let leftNode = try XCTUnwrap(expression.left)
-        XCTAssertEqual(leftNode.token, .operator("^"))
+        XCTAssertEqual(leftNode.token, .binaryOperator("^"))
         let leftLeftNode = try XCTUnwrap(leftNode.left)
         XCTAssertEqual(leftLeftNode.token, .numeric(2.0))
         
@@ -45,22 +45,22 @@ final class MathExpressionParser_10PowerTests: XCTestCase {
         XCTAssertEqual(try expression.calc(), 12.0)
     }
     
-    func test_power_operatorOrder() async throws {
-        let tokens = [Token.numeric(1.0), Token.operator("*"), Token.numeric(2.0), Token.operator("^"), Token.numeric(3.0), Token.operator("*"), Token.numeric(4.0)]
+    func test_power_binaryOperatorOrder() async throws {
+        let tokens = [Token.numeric(1.0), Token.binaryOperator("*"), Token.numeric(2.0), Token.binaryOperator("^"), Token.numeric(3.0), Token.binaryOperator("*"), Token.numeric(4.0)]
         let sut = MathExpressionParser()
         let expression = try XCTUnwrap(sut.parse(tokens))
         
         let topToken = try XCTUnwrap(expression.token)
-        XCTAssertEqual(topToken, .operator("*"))
+        XCTAssertEqual(topToken, .binaryOperator("*"))
 
         let leftNode = try XCTUnwrap(expression.left)
         XCTAssertEqual(leftNode.token, .numeric(1.0))
         
         let rightNode = try XCTUnwrap(expression.right)
-        XCTAssertEqual(rightNode.token, .operator("*"))
+        XCTAssertEqual(rightNode.token, .binaryOperator("*"))
         
         let rightLeftNode = try XCTUnwrap(rightNode.left)
-        XCTAssertEqual(rightLeftNode.token, .operator("^"))
+        XCTAssertEqual(rightLeftNode.token, .binaryOperator("^"))
         
         let rightLeftLeftNode = try XCTUnwrap(rightLeftNode.left)
         XCTAssertEqual(rightLeftLeftNode.token, .numeric(2.0))

@@ -21,11 +21,28 @@ public class MathExpressionParser {
 
     public init() {}
     
+    // parser logic
+    // 5 + 8
+    // 1) push 5 into working stack
+    // 2) push + into working stack
+    // 3) push 8 into working stack
+    // 4) working stack has 3 element, then create Expression for 5 + 8, replace 3 element in working stack with newly created expression
+    // 5) repeat above until all tokens are processed
+    //
+    // bracket case note: function is treated as bracket with functin name
+    // sin(5+8)
+    // 1) push sin into working stack
+    // 2) find openBracket, push current working stack into bracket stack working: [], bracket: ["sin"]
+    // 3) push 5,+,8 then working stack will have "5+8"  <- called currentExpresion
+    // 4) find closeBracket, check last element in bracket whether it is function or not, in this case it is function
+    // 5) pop expression and drop last element in expression because it is function
+    // 6) create new expression from function and currentExpression
+    // 7) push created expression into working stack
+    
     public func parse(_ tokens:[Token]) throws -> MathExpression {
         guard tokens.count > 0 else { throw Error.invalidExpression  }
         var workingStack:[MathExpression] = []
         var bracketStack:[[MathExpression]] = []
-        //var function: Token? = nil
         var necessaryCloseBrackets = 0
         
         for token in tokens {
@@ -35,10 +52,18 @@ public class MathExpressionParser {
                 necessaryCloseBrackets += 1
             } else if token.isCloseBracket {
                 guard workingStack.count == 1 else { throw Error.invalidAST }
-                let lastExpression = workingStack[0]
-                let bracketedToken = MathExpression(value: .bracketed(lastExpression))
-                workingStack = bracketStack.popLast() ?? []
-                workingStack.append(bracketedToken)
+                let currentExpression = workingStack[0]
+                // check function or just brancketed?
+                var stackedExpression = bracketStack.popLast() ?? [] // maybe first element is openBracket
+                if let last = stackedExpression.last,
+                   last.token.isFunction {
+                    print("function")
+                } else {
+                    workingStack = stackedExpression
+                    let bracketedToken = MathExpression(value: .bracketed(currentExpression))
+                    workingStack.append(bracketedToken)
+                }
+                //workingStack = bracketStack.popLast() ?? []
                 necessaryCloseBrackets -= 1
 //            } else if token.isFunction {
 //                guard function == nil else { throw Error.InvalidAST } // function after function ?

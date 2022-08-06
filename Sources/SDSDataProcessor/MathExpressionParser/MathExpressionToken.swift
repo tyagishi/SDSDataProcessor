@@ -8,7 +8,7 @@
 import Foundation
 
 public enum Token: CustomDebugStringConvertible, CaseIterable, Equatable {
-    static public var allCases: [Token] = [.numeric(0.0), .binaryOperator("+"), .openBracket, .closeBracket, .function("")]
+    static public var allCases: [Token] = [.numeric(0.0), .binaryOperator("+"), .openBracket, .closeBracket, .functionName("")]
     
     static let groupingSeparator = Locale.current.groupingSeparator ?? ""
 
@@ -18,11 +18,12 @@ public enum Token: CustomDebugStringConvertible, CaseIterable, Equatable {
 
     // only for lexer
     case openBracket
-    case function(String)
+    case functionName(String)
     case closeBracket
     
     // only for parser
     case bracketed(MathExpression)
+    case function(String, MathExpression)
 
     func instanciateWithValue(_ string: String) -> Token? {
         switch self {
@@ -37,9 +38,11 @@ public enum Token: CustomDebugStringConvertible, CaseIterable, Equatable {
             return .openBracket
         case .closeBracket:
             return .closeBracket
-        case .function(_):
-            return .function(string)
+        case .functionName(_):
+            return .functionName(string)
         case .bracketed(_):
+            fatalError()
+        case .function(_,_):
             fatalError()
         }
     }
@@ -54,9 +57,9 @@ public enum Token: CustomDebugStringConvertible, CaseIterable, Equatable {
             return CharacterSet.openBracketsCharacters
         case .closeBracket:
             return CharacterSet.closeBracketsCharacters
-        case .function(_):
+        case .functionName(_):
             return CharacterSet.letters
-        case .bracketed(_):
+        case .bracketed(_), .function(_,_):
             return CharacterSet() // empty
         }
     }
@@ -129,7 +132,7 @@ public enum Token: CustomDebugStringConvertible, CaseIterable, Equatable {
     }
     
     var isFunction: Bool {
-        if case .function(_) = self {
+        if case .functionName(_) = self {
             return true
         }
         return false
@@ -179,8 +182,10 @@ public enum Token: CustomDebugStringConvertible, CaseIterable, Equatable {
             return "Close"
         case .bracketed(let expression):
             return "Bracketed \(expression)"
-        case .function(let funcName):
+        case .functionName(let funcName):
             return "Function_\(funcName)"
+        case .function(let funcName, let expression):
+            return "Function_\(funcName) \(expression)"
         }
     }
 }

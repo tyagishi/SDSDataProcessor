@@ -42,10 +42,10 @@ final class MathExpressionParser_99BugTests: XCTestCase {
     func test_BugAt20220802() throws {
         let sut = BruteForceLexer()
         let tokens = try XCTUnwrap(sut.lex("(1+"))
-        XCTAssertEqual(tokens.count, 7)
+        XCTAssertEqual(tokens.count, 3)
         let sutParser = MathExpressionParser()
-        let expression = try XCTUnwrap(sutParser.parse(tokens))
-        let result = try XCTUnwrap(expression.calc())
-        XCTAssertEqual(result, 6, accuracy: 0.001)
+        XCTAssertThrowsError(try sutParser.parse(tokens)) { exception in
+            //print("shouldThrow")
+        }
     }
 }

@@ -13,7 +13,7 @@ extension Token {
         switch lastToken {
         case .numeric(_), .closeBracket:
             return [.binaryOperator("+"), .openBracket, .closeBracket]
-        case .function(_):
+        case .functionName(_):
             return [.openBracket]
         default:
             return Token.allCases
