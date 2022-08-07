@@ -29,23 +29,20 @@ extension MathExpression {
     typealias Error = MathExpressionParserError
 
     public func calc() throws -> Double {
-//        if case .brancket(let expr) = self {
-//            return try expr.calc()
-//        }
-//        guard case .node(let myLeft, let myNode, let myRight) = self else { throw Error.InvalidAST }
-//
         if self.left == nil, self.right == nil {
             if self.token.isNumeric {
                 return self.token.doubleValue!
             } else if case Token.function(let name, let argument) = self.token {
                 let value = try argument.calc()
-                switch name {
+                switch name.lowercased() {
                 case "sin":
                     return sin(value / 180.0 * Double.pi)
                 case "cos":
                     return cos(value / 180.0 * Double.pi)
                 case "tan":
                     return tan(value / 180.0 * Double.pi)
+                case "sqrt":
+                    return sqrt(value)
                 default:
                     throw Error.unknownFunction
                 }
