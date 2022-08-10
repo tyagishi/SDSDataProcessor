@@ -4,12 +4,12 @@ import XCTest
 final class MathExpressionParser_20FuncTests: XCTestCase {
 
     func test_func_sin45() async throws {
-        let tokens = [Token.functionName("sin"), Token.openBracket, Token.numeric(45.0), Token.closeBracket]
+        let tokens = [Token.functionName("sin("), Token.numeric(45.0), Token.closeBracket]
         let sut = MathExpressionParser()
         let expression = try XCTUnwrap(sut.parse(tokens))
         
         let topToken = try XCTUnwrap(expression.token)
-        XCTAssertEqual(topToken.functionName, "sin")
+        XCTAssertEqual(topToken.functionName, "sin(")
         let argument = try XCTUnwrap(topToken.functionArgument)
         
         XCTAssertEqual(argument.token, .numeric(45))
@@ -17,12 +17,12 @@ final class MathExpressionParser_20FuncTests: XCTestCase {
     }
     
     func test_func_cos45() async throws {
-        let tokens = [Token.functionName("cos"), Token.openBracket, Token.numeric(45.0), Token.closeBracket]
+        let tokens = [Token.functionName("cos("), Token.numeric(45.0), Token.closeBracket]
         let sut = MathExpressionParser()
         let expression = try XCTUnwrap(sut.parse(tokens))
         
         let topToken = try XCTUnwrap(expression.token)
-        XCTAssertEqual(topToken.functionName, "cos")
+        XCTAssertEqual(topToken.functionName, "cos(")
         let argument = try XCTUnwrap(topToken.functionArgument)
         
         XCTAssertEqual(argument.token, .numeric(45))
@@ -30,12 +30,12 @@ final class MathExpressionParser_20FuncTests: XCTestCase {
     }
     
     func test_func_sinCalcWithArgumentCalc() async throws {
-        let tokens = [Token.functionName("sin"), Token.openBracket, Token.numeric(25.0), Token.binaryOperator("+"), Token.numeric(20), Token.closeBracket]
+        let tokens = [Token.functionName("sin("), Token.numeric(25.0), Token.binaryOperator("+"), Token.numeric(20), Token.closeBracket]
         let sut = MathExpressionParser()
         let expression = try XCTUnwrap(sut.parse(tokens))
         
         let topToken = try XCTUnwrap(expression.token)
-        XCTAssertEqual(topToken.functionName, "sin")
+        XCTAssertEqual(topToken.functionName, "sin(")
         let argument = try XCTUnwrap(topToken.functionArgument)
         
         XCTAssertEqual(argument.token, .binaryOperator("+"))
@@ -48,7 +48,7 @@ final class MathExpressionParser_20FuncTests: XCTestCase {
     }
     
     func test_func_sinAndbinaryOperator() async throws {
-        let tokens = [Token.functionName("sin"), Token.openBracket, Token.numeric(45.0), Token.closeBracket, .binaryOperator("+"), .numeric(1.0)]
+        let tokens = [Token.functionName("sin("), Token.numeric(45.0), Token.closeBracket, .binaryOperator("+"), .numeric(1.0)]
         let sut = MathExpressionParser()
         let expression = try XCTUnwrap(sut.parse(tokens))
 
@@ -57,7 +57,7 @@ final class MathExpressionParser_20FuncTests: XCTestCase {
         XCTAssertEqual(topToken, .binaryOperator("+"))
 
         let leftNode = try XCTUnwrap(expression.left)
-        XCTAssertEqual(leftNode.token.functionName, "sin")
+        XCTAssertEqual(leftNode.token.functionName, "sin(")
         let argument = try XCTUnwrap(leftNode.token.functionArgument)
         
         XCTAssertEqual(argument.token, .numeric(45))

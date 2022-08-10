@@ -58,7 +58,7 @@ public enum Token: CustomDebugStringConvertible, CaseIterable, Equatable {
         case .closeBracket:
             return CharacterSet.closeBracketsCharacters
         case .functionName(_):
-            return CharacterSet.letters
+            return CharacterSet.functionNameWithBracket
         case .bracketed(_), .function(_,_):
             return CharacterSet() // empty
         }
@@ -241,6 +241,11 @@ extension CharacterSet {
     static var closeBracketsCharacters: CharacterSet {
         var ope = CharacterSet()
         ope.insert(charactersIn: ")]")
+        return ope
+    }
+    static var functionNameWithBracket: CharacterSet {
+        var ope = CharacterSet.letters
+        ope.insert("(")
         return ope
     }
 }

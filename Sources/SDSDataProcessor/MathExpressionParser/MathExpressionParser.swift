@@ -51,6 +51,13 @@ public class MathExpressionParser {
                 if workingStack.count > 0 { bracketStack.append(workingStack) }
                 workingStack = []
                 necessaryCloseBrackets += 1
+            } else if token.isFunction,
+                      let functionName = token.functionName {
+                // consume open bracket
+                workingStack.append(MathExpression(value: .functionName(functionName)))
+                if workingStack.count > 0 { bracketStack.append(workingStack) }
+                workingStack = []
+                necessaryCloseBrackets += 1
             } else if token.isCloseBracket {
                 guard workingStack.count == 1 else { throw Error.invalidAST }
                 let currentExpression = workingStack[0]

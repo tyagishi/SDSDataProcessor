@@ -14,7 +14,7 @@ extension Token {
         case .numeric(_), .closeBracket:
             return [.binaryOperator("+"), .openBracket, .closeBracket]
         case .functionName(_):
-            return [.openBracket]
+            return [.numeric(1.0), .openBracket]
         default:
             return Token.allCases
         }

@@ -48,4 +48,13 @@ final class MathExpressionParser_99BugTests: XCTestCase {
             //print("shouldThrow")
         }
     }
+    func test_BugAt20220810() throws {
+        let sut = BruteForceLexer()
+        let tokens = try XCTUnwrap(sut.lex("1+sin(45)"))
+        XCTAssertEqual(tokens.count, 5)
+        let sutParser = MathExpressionParser()
+        let expression = try XCTUnwrap(sutParser.parse(tokens))
+        let result = try XCTUnwrap(expression.calc())
+        XCTAssertEqual(result, 1.70710678, accuracy: 0.001) // 1 + sin(45)
+    }
 }
