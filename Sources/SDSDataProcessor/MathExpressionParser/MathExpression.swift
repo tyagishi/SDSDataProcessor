@@ -35,19 +35,19 @@ extension MathExpression {
             } else if case Token.function(let name, let argument) = self.token {
                 let value = try argument.calc()
                 switch name.lowercased() {
-                case "sin(":
+                case "sin":
                     return sin(value / 180.0 * Double.pi)
-                case "cos(":
+                case "cos":
                     return cos(value / 180.0 * Double.pi)
-                case "tan(":
+                case "tan":
                     return tan(value / 180.0 * Double.pi)
-                case "sqrt(":
+                case "sqrt":
                     return sqrt(value)
-                case "asin(":
+                case "asin":
                     return asin(value) / Double.pi * 180
-                case "acos(":
+                case "acos":
                     return acos(value) / Double.pi * 180
-                case "atan(":
+                case "atan":
                     return atan(value) / Double.pi * 180
                 default:
                     throw Error.unknownFunction

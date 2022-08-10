@@ -47,6 +47,14 @@ public class BruteForceLexer {
             if case .numeric(_) = token,
                let numericToken = scanNumeric(scanner) {
                 return numericToken
+            } else if token.isFunction {
+                if let foundToken = scanFunction(scanner) {
+                    return foundToken
+                }
+            } else if token.isCloseBracket {
+                if let foundToken = scanCloseBracket(scanner) {
+                    return foundToken
+                }
             } else {
                 if let foundToken = scanToken(scanner, token: token) {
                     return foundToken
@@ -75,8 +83,31 @@ public class BruteForceLexer {
         // reset start position
         scanner.currentIndex = startPosition
         return nil
-
     }
+    
+    func scanFunction(_ scanner: Scanner) -> Token? {
+        let startPosition = scanner.currentIndex
+        if let scanString = scanner.scanCharacters(from: CharacterSet.letters) {
+            // next is (?
+            if scanner.scanCharacter() == "(" {
+                return Token.functionName(scanString)
+            }
+        }
+        // reset start position
+        scanner.currentIndex = startPosition
+        return nil
+    }
+    
+    func scanCloseBracket(_ scanner: Scanner) -> Token? {
+        let startPosition = scanner.currentIndex
+        if scanner.scanCharacter() == ")" {
+            return Token.closeBracket
+        }
+        // reset start position
+        scanner.currentIndex = startPosition
+        return nil
+    }
+    
 
     func scanToken(_ scanner: Scanner, token: Token) -> Token? {
         let startPosition = scanner.currentIndex
