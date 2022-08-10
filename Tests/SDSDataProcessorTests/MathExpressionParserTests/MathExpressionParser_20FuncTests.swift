@@ -28,6 +28,18 @@ final class MathExpressionParser_20FuncTests: XCTestCase {
         XCTAssertEqual(argument.token, .numeric(45))
         XCTAssertEqual(try expression.calc(), cos(45.0 / 180 * Double.pi), accuracy: 0.001)
     }
+    func test_func_asin1() async throws {
+        let tokens = [Token.functionName("asin("), Token.numeric(1.0), Token.closeBracket]
+        let sut = MathExpressionParser()
+        let expression = try XCTUnwrap(sut.parse(tokens))
+        
+        let topToken = try XCTUnwrap(expression.token)
+        XCTAssertEqual(topToken.functionName, "asin(")
+        let argument = try XCTUnwrap(topToken.functionArgument)
+        
+        XCTAssertEqual(argument.token, .numeric(1.0))
+        XCTAssertEqual(try expression.calc(), 90.0, accuracy: 0.001)
+    }
     
     func test_func_sinCalcWithArgumentCalc() async throws {
         let tokens = [Token.functionName("sin("), Token.numeric(25.0), Token.binaryOperator("+"), Token.numeric(20), Token.closeBracket]

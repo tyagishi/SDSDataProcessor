@@ -43,6 +43,12 @@ extension MathExpression {
                     return tan(value / 180.0 * Double.pi)
                 case "sqrt(":
                     return sqrt(value)
+                case "asin(":
+                    return asin(value) / Double.pi * 180
+                case "acos(":
+                    return acos(value) / Double.pi * 180
+                case "atan(":
+                    return atan(value) / Double.pi * 180
                 default:
                     throw Error.unknownFunction
                 }
