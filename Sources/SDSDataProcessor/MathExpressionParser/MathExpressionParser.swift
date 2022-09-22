@@ -136,7 +136,6 @@ public class MathExpressionParser {
             mergeNodeParent?.setRight(newExpression)
             return newExpression.rootNode
         }
-        throw Error.invalidAST
     }
     
     //　以下、検討メモ
