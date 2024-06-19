@@ -198,7 +198,7 @@ public enum Token: CustomDebugStringConvertible, CaseIterable, Equatable {
             return "Bracketed \(expression)"
         case .functionName(let funcName):
             return "Function_\(funcName)"
-        case .function(let funcName, let expression):
+        case let .function(funcName, expression):
             return "Function_\(funcName) \(expression)"
         }
     }

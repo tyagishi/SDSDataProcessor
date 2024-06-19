@@ -39,6 +39,7 @@ public class MathExpressionParser {
     // 6) create new expression from function and currentExpression
     // 7) push created expression into working stack
     
+    // swiftlint:disable cyclomatic_complexity
     public func parse(_ tokens: [Token]) throws -> MathExpression {
         guard !tokens.isEmpty else { throw Error.invalidExpression  }
         var workingStack: [MathExpression] = []
@@ -95,7 +96,8 @@ public class MathExpressionParser {
         guard workingStack.count == 1 else { throw Error.invalidAST }
         return workingStack[0]
     }
-    
+    // swiftlint:enable cyclomatic_complexity
+
     // +-演算子は、一番右のノードを新しいオペレータで置き換える
     //   +             ->       +
     //  1 2  <- + 3           1   +

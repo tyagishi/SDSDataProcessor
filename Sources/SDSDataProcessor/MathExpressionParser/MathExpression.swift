@@ -29,6 +29,7 @@ extension MathExpression {
 extension MathExpression {
     typealias Error = MathExpressionParserError
 
+    // swiftlint:disable cyclomatic_complexity
     public func calc() throws -> Double {
         if self.left == nil, self.right == nil {
             if self.token.isNumeric {
@@ -83,4 +84,5 @@ extension MathExpression {
             throw Error.invalidAST
         }
     }
+    // swiftlint:enable cyclomatic_complexity
 }

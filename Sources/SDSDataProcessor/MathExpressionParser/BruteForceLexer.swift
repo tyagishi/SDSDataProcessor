@@ -122,7 +122,7 @@ public class BruteForceLexer {
 
     func consumeWhitespace(_ scanner: Scanner) {
         var newStartPos = scanner.currentIndex
-        while(true) {
+        while true {
             if let firstChar = scanner.scanCharacter(),
                firstChar.isWhitespace {
                 newStartPos = scanner.string.index(after: newStartPos)
