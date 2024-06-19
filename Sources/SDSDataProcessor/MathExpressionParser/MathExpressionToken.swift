@@ -8,7 +8,7 @@
 import Foundation
 
 public enum Token: CustomDebugStringConvertible, CaseIterable, Equatable {
-    static public var allCases: [Token] = [.numeric(0.0), .binaryOperator("+"), .openBracket, .closeBracket, .functionName("")]
+    public static var allCases: [Token] = [.numeric(0.0), .binaryOperator("+"), .openBracket, .closeBracket, .functionName("")]
     
     static let groupingSeparator = Locale.current.groupingSeparator ?? ""
 
@@ -27,39 +27,39 @@ public enum Token: CustomDebugStringConvertible, CaseIterable, Equatable {
 
     func instanciateWithValue(_ string: String) -> Token? {
         switch self {
-        case .numeric(_):
+        case .numeric:
             if let dValue = Double(string.filter({ !(Token.groupingSeparator.contains($0)) })) {
                 return .numeric(dValue)
             }
             return nil
-        case .binaryOperator(_):
+        case .binaryOperator:
             return .binaryOperator(string)
         case .openBracket:
             return .openBracket
         case .closeBracket:
             return .closeBracket
-        case .functionName(_):
+        case .functionName:
             return .functionName(string)
-        case .bracketed(_):
-            fatalError()
-        case .function(_,_):
-            fatalError()
+        case .bracketed:
+            fatalError("invalid bracket appeared")
+        case .function:
+            fatalError("invalid function appeared")
         }
     }
     
     var scanCharacterSet: CharacterSet {
         switch self {
-        case .numeric(_):
+        case .numeric:
             return CharacterSet.numericCharacters
-        case .binaryOperator(_):
+        case .binaryOperator:
             return CharacterSet.operatorCharacters
         case .openBracket:
             return CharacterSet.openBracketsCharacters
         case .closeBracket:
             return CharacterSet.closeBracketsCharacters
-        case .functionName(_):
+        case .functionName:
             return CharacterSet.functionNameWithBracket
-        case .bracketed(_), .function(_,_):
+        case .bracketed, .function:
             return CharacterSet() // empty
         }
     }
@@ -103,7 +103,7 @@ public enum Token: CustomDebugStringConvertible, CaseIterable, Equatable {
     
     var isNumeric: Bool {
         switch self {
-        case .numeric(_):
+        case .numeric:
             return true
         default:
             return false
@@ -125,14 +125,14 @@ public enum Token: CustomDebugStringConvertible, CaseIterable, Equatable {
     }
     
     var isBracketed: Bool {
-        if case .bracketed(_) = self {
+        if case .bracketed = self {
             return true
         }
         return false
     }
     
     var isFunction: Bool {
-        if case .functionName(_) = self {
+        if case .functionName = self {
             return true
         }
         return false
@@ -150,7 +150,6 @@ public enum Token: CustomDebugStringConvertible, CaseIterable, Equatable {
             return expression
         }
         return nil
-
     }
     
     var expression: MathExpression? {
@@ -205,7 +204,6 @@ public enum Token: CustomDebugStringConvertible, CaseIterable, Equatable {
     }
 }
 
-
 extension CharacterSet {
     static var plusMinus: CharacterSet {
         var ope = CharacterSet()
@@ -249,4 +247,3 @@ extension CharacterSet {
         return ope
     }
 }
-

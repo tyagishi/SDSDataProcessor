@@ -14,6 +14,7 @@ extension MathExpression {
     public var token: Token {
         self.value
     }
+    
     public func mostRightNode() -> MathExpression {
         guard let right = self.right else { return self }
         return right.mostRightNode()
@@ -32,7 +33,8 @@ extension MathExpression {
         if self.left == nil, self.right == nil {
             if self.token.isNumeric {
                 return self.token.doubleValue!
-            } else if case Token.function(let name, let argument) = self.token {
+            } 
+            if case Token.function(let name, let argument) = self.token {
                 let value = try argument.calc()
                 switch name.lowercased() {
                 case "sin":
@@ -52,7 +54,8 @@ extension MathExpression {
                 default:
                     throw Error.unknownFunction
                 }
-            } else if let expression = self.token.expression {
+            }
+            if let expression = self.token.expression {
                 return try expression.calc()
             }
             throw Error.invalidAST

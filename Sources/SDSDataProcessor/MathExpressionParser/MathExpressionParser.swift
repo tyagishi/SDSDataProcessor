@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 public enum MathExpressionParserError: Error {
     case invalidToken
     case invalidExpression
@@ -40,22 +39,22 @@ public class MathExpressionParser {
     // 6) create new expression from function and currentExpression
     // 7) push created expression into working stack
     
-    public func parse(_ tokens:[Token]) throws -> MathExpression {
-        guard tokens.count > 0 else { throw Error.invalidExpression  }
-        var workingStack:[MathExpression] = []
-        var bracketStack:[[MathExpression]] = []
+    public func parse(_ tokens: [Token]) throws -> MathExpression {
+        guard !tokens.isEmpty else { throw Error.invalidExpression  }
+        var workingStack: [MathExpression] = []
+        var bracketStack: [[MathExpression]] = []
         var necessaryCloseBrackets = 0
         
         for token in tokens {
             if token.isOpenBracket {
-                if workingStack.count > 0 { bracketStack.append(workingStack) }
+                if !workingStack.isEmpty { bracketStack.append(workingStack) }
                 workingStack = []
                 necessaryCloseBrackets += 1
             } else if token.isFunction,
                       let functionName = token.functionName {
                 // consume open bracket
                 workingStack.append(MathExpression(value: .functionName(functionName)))
-                if workingStack.count > 0 { bracketStack.append(workingStack) }
+                if !workingStack.isEmpty { bracketStack.append(workingStack) }
                 workingStack = []
                 necessaryCloseBrackets += 1
             } else if token.isCloseBracket {
@@ -92,7 +91,7 @@ public class MathExpressionParser {
             }
         }
         guard necessaryCloseBrackets == 0 else { throw Error.invalidAST }
-        guard bracketStack.count == 0 else { throw Error.unbalancedBrackets }
+        guard bracketStack.isEmpty else { throw Error.unbalancedBrackets }
         guard workingStack.count == 1 else { throw Error.invalidAST }
         return workingStack[0]
     }
@@ -109,7 +108,6 @@ public class MathExpressionParser {
     //   *               ->       +
     //  1 2   <- + 3            *   3
     //                         1 2
-
 
     func mergeExpression(topNode: MathExpression, opeNode: MathExpression, addNode: MathExpression) throws -> MathExpression {
         let opeToken = opeNode.value
@@ -129,13 +127,12 @@ public class MathExpressionParser {
             let newExpression = MathExpression(value: opeToken, left: mergeNode, right: addNode)
             mergeNodeParent?.setRight(newExpression)
             return newExpression.rootNode
-        } else {
-            mergeNode = mergeNode.parent!
-            let mergeNodeParent = mergeNode.parent
-            let newExpression = MathExpression(value: opeToken, left: mergeNode, right: addNode)
-            mergeNodeParent?.setRight(newExpression)
-            return newExpression.rootNode
-        }
+        } 
+        mergeNode = mergeNode.parent!
+        let mergeNodeParent = mergeNode.parent
+        let newExpression = MathExpression(value: opeToken, left: mergeNode, right: addNode)
+        mergeNodeParent?.setRight(newExpression)
+        return newExpression.rootNode
     }
     
     //　以下、検討メモ

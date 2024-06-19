@@ -8,12 +8,12 @@
 import Foundation
 
 extension Token {
-    static func possibleTokens(pastTokens:[Token]) -> [Token] {
+    static func possibleTokens(pastTokens: [Token]) -> [Token] {
         guard let lastToken = pastTokens.last else { return Token.allCases }
         switch lastToken {
-        case .numeric(_), .closeBracket:
+        case .numeric, .closeBracket:
             return [.binaryOperator("+"), .openBracket, .closeBracket]
-        case .functionName(_):
+        case .functionName:
             return [.numeric(1.0), .openBracket]
         default:
             return Token.allCases
@@ -23,6 +23,7 @@ extension Token {
 
 public class BruteForceLexer {
     typealias Error = MathExpressionParserError
+    
     let numericCharacterSet = CharacterSet.numericCharacters
     let groupingSeparator = Locale.current.groupingSeparator ?? ""
     
@@ -44,10 +45,11 @@ public class BruteForceLexer {
 
     func scanToken(_ scanner: Scanner, pastTokens: [Token]) -> Token? {
         for token in Token.possibleTokens(pastTokens: pastTokens) {
-            if case .numeric(_) = token,
+            if case .numeric = token,
                let numericToken = scanNumeric(scanner) {
                 return numericToken
-            } else if token.isFunction {
+            } 
+            if token.isFunction {
                 if let foundToken = scanFunction(scanner) {
                     return foundToken
                 }
@@ -69,16 +71,15 @@ public class BruteForceLexer {
 
         // Numeric starts with "+"/"-" ?
         if let leadChar = scanner.scanCharacter(),
-           CharacterSet.plusMinus.contains( Unicode.Scalar( leadChar.unicodeScalars.map({$0.value}).reduce(0, +) )!),
+           CharacterSet.plusMinus.contains( Unicode.Scalar( leadChar.unicodeScalars.map({ $0.value }).reduce(0, +) )!),
            let scanString = scanner.scanCharacters(from: CharacterSet.strictNumericCharacters),
            let newToken = Token.numeric(1.0).instanciateWithValue(String(leadChar).appending(scanString)) {
             return newToken
-        } else {
-            scanner.currentIndex = startPosition
-            if let scanString = scanner.scanCharacters(from: CharacterSet.strictNumericCharacters),
-               let newToken = Token.numeric(1.0).instanciateWithValue(scanString) {
-                return newToken
-            }
+        } 
+        scanner.currentIndex = startPosition
+        if let scanString = scanner.scanCharacters(from: CharacterSet.strictNumericCharacters),
+           let newToken = Token.numeric(1.0).instanciateWithValue(scanString) {
+            return newToken
         }
         // reset start position
         scanner.currentIndex = startPosition
@@ -108,7 +109,6 @@ public class BruteForceLexer {
         return nil
     }
     
-
     func scanToken(_ scanner: Scanner, token: Token) -> Token? {
         let startPosition = scanner.currentIndex
         if let scanString = scanner.scanCharacters(from: token.scanCharacterSet),
