@@ -5,7 +5,8 @@ convenient class/struct/enum/actor collection
 ## MathExpression/MathExpressionParser/BruteForceLexer
 
 lexer/parser for math expression 
-currently only accept numeric, +(plus) / -(minus) / *(multi) / /(div)
+currently only accept numeric, +(plus) / -(minus) / *(multi) / /(div) / ^(pow)
+accespt as function: sin/cos/tan/asin/acos/atan/sqrt
 
 - can convert "1 + 2 * 2" into MathExpression (AST)
 - understand operator priority */ > +-
