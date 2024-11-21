@@ -11,6 +11,21 @@ import SDSDataStructure
 public typealias MathExpression = BinaryTreeNode<Token>
 
 extension MathExpression {
+    public static let mathExpressionTokens = ["sin", "cos", "tan", "asin", "acos", "atan"]
+    public static var mathExpressionCharacterSet: CharacterSet {
+        var charSet = CharacterSet.decimalDigits
+        charSet.insert(charactersIn: "+-*/^=")
+        if let groupingSeparator = Locale.current.groupingSeparator {
+            charSet.insert(charactersIn: groupingSeparator)
+        }
+        if let decimalSeparator = Locale.current.decimalSeparator {
+            charSet.insert(charactersIn: decimalSeparator)
+        }
+        return charSet
+    }
+}
+
+extension MathExpression {
     public var token: Token {
         self.value
     }
