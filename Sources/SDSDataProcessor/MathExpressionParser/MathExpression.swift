@@ -12,6 +12,8 @@ public typealias MathExpression = BinaryTreeNode<Token>
 
 extension MathExpression {
     public static let mathExpressionTokens = ["sin", "cos", "tan", "asin", "acos", "atan"]
+    // note: this set includes "=" but lexer does not understand =
+    // understanding "=" position usually important since it indicats end of expression
     public static var mathExpressionCharacterSet: CharacterSet {
         var charSet = CharacterSet.decimalDigits
         charSet.insert(charactersIn: "+-*/^=")

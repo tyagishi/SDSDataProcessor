@@ -7,14 +7,16 @@
 
 import Foundation
 
-func calcMathExpression(_ string: String) throws -> Double {
+public func calcMathExpression(_ string: String) throws -> Double {
     let filter = FilterLexer(chars: MathExpression.mathExpressionCharacterSet,
-                             scanTokens: MathExpression.mathExpressionTokens)
+                             tokens: MathExpression.mathExpressionTokens)
     let filtered = try filter.filter(string)
+    
+    guard let evalString = filtered.string.retrieveUntil("=") else { throw MathExpressionParserError.invalidExpression }
     
     let lexer = BruteForceLexer()
     let parser = MathExpressionParser()
-    let tokens = try lexer.lex(filtered.string)
+    let tokens = try lexer.lex(String(evalString))
     let expression = try parser.parse(tokens)
     let result = try expression.calc()
     return result

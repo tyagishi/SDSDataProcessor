@@ -9,13 +9,13 @@ import Foundation
 
 public class FilterLexer {
     let chars: CharacterSet?
-    let scanTokens: [String]?
+    let tokens: [String]?
     let caseSensitive: Bool
     let stringCompareOption: String.CompareOptions
 
-    public init(chars: CharacterSet? = nil, scanTokens: [String]? = nil, caseSensitive: Bool = false) {
+    public init(chars: CharacterSet? = nil, tokens: [String]? = nil, caseSensitive: Bool = false) {
         self.chars = chars
-        self.scanTokens = scanTokens
+        self.tokens = tokens
         self.caseSensitive = caseSensitive
         self.stringCompareOption = caseSensitive ? .caseInsensitive : .literal
     }
@@ -45,9 +45,9 @@ public class FilterLexer {
     }
     
     func scanToken(_ scanner: Scanner) -> String? {
-        guard let scanTokens = scanTokens else { return nil }
+        guard let tokens = tokens else { return nil }
         let startPosition = scanner.currentIndex
-        for token in scanTokens {
+        for token in tokens {
             let length = token.count
             guard let endIndex = scanner.string.index(startPosition, offsetBy: length, limitedBy: scanner.string.endIndex) else { continue }
             if scanner.string[startPosition..<endIndex].compare(token, options: stringCompareOption) == .orderedSame {

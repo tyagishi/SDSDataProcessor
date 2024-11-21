@@ -11,12 +11,12 @@ import XCTest
 final class FilterLexer_Tests: XCTestCase {
     
     func test_init() async throws {
-        let sut = FilterLexer(chars: nil, scanTokens: ["Hello", "World"], caseSensitive: false)
+        let sut = FilterLexer(chars: nil, tokens: ["Hello", "World"], caseSensitive: false)
         XCTAssertNotNil(sut)
     }
     
     func test_filter_withTokens() async throws {
-        let sut = FilterLexer(chars: nil, scanTokens: ["Hello", "World"], caseSensitive: false)
+        let sut = FilterLexer(chars: nil, tokens: ["Hello", "World"], caseSensitive: false)
 
         let result = try sut.filter("Hello Japan, Hello Germany, Hello World")
         XCTAssertEqual(result.string, "HelloHelloHelloWorld")
@@ -24,7 +24,7 @@ final class FilterLexer_Tests: XCTestCase {
     }
 
     func test_filter_withChars() async throws {
-        let sut = FilterLexer(chars: CharacterSet.letters, scanTokens: nil, caseSensitive: false)
+        let sut = FilterLexer(chars: CharacterSet.letters, tokens: nil, caseSensitive: false)
 
         let result = try sut.filter("Hello Japan, Hello Germany, Hello World")
         XCTAssertEqual(result.string, "HelloJapanHelloGermanyHelloWorld")
@@ -33,7 +33,7 @@ final class FilterLexer_Tests: XCTestCase {
 
     func test_filter_mathExpression() async throws {
         let sut = FilterLexer(chars: MathExpression.mathExpressionCharacterSet,
-                              scanTokens: MathExpression.mathExpressionTokens)
+                              tokens: MathExpression.mathExpressionTokens)
 
         let result = try sut.filter("1Kg + 2Kg =")
         XCTAssertEqual(result.string, "1+2=")
