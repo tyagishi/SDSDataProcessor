@@ -28,4 +28,9 @@ final class MathExpressionParser_98BugTests: XCTestCase {
         XCTAssertEqual(result, 69.58, accuracy: 0.001)
     }
 
+    
+    func test_BugAt20241216_0_calcMathExpression() throws {
+        let result = try calcMathExpression("22931 * 20 / (90 - 20 * 1.021) =")
+        XCTAssertEqual(result, 6591.262, accuracy: 0.001)
+    }
 }

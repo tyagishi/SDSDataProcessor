@@ -16,7 +16,7 @@ extension MathExpression {
     // understanding "=" position usually important since it indicats end of expression
     public static var mathExpressionCharacterSet: CharacterSet {
         var charSet = CharacterSet.decimalDigits
-        charSet.insert(charactersIn: "+-*/^=")
+        charSet.insert(charactersIn: "+-*/^=()")
         if let groupingSeparator = Locale.current.groupingSeparator {
             charSet.insert(charactersIn: groupingSeparator)
         }

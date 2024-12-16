@@ -1,0 +1,23 @@
+{
+  "pins" : [
+    {
+      "identity" : "sdsdatastructure",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/tyagishi/SDSDataStructure",
+      "state" : {
+        "revision" : "b5fba1495fc490175e8717b8b2babb47eef57852",
+        "version" : "3.6.4"
+      }
+    },
+    {
+      "identity" : "swiftlintplugins",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/SimplyDanny/SwiftLintPlugins",
+      "state" : {
+        "revision" : "9ad9487c2448b3f1265ea2cc8af246b9cae6878d",
+        "version" : "0.56.1"
+      }
+    }
+  ],
+  "version" : 2
+}
