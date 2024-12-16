@@ -1,0 +1,50 @@
+{
+  "pins" : [
+    {
+      "identity" : "sdsdatastructure",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/tyagishi/SDSDataStructure",
+      "state" : {
+        "revision" : "c0d5722550e259f804ae9791d1e341b34e3b6217",
+        "version" : "4.0.0"
+      }
+    },
+    {
+      "identity" : "sdsmacros",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/tyagishi/SDSMacros",
+      "state" : {
+        "revision" : "25ee7d867fe55f9a717e1c6bcc05f2616407635c",
+        "version" : "2.0.0"
+      }
+    },
+    {
+      "identity" : "sdsstringextension",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/tyagishi/SDSStringExtension",
+      "state" : {
+        "revision" : "74432927c5d37ad2c41e90b0c8be8783a166d3ba",
+        "version" : "1.4.0"
+      }
+    },
+    {
+      "identity" : "swift-syntax",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-syntax.git",
+      "state" : {
+        "revision" : "2bc86522d115234d1f588efe2bcb4ce4be8f8b82",
+        "version" : "510.0.3"
+      }
+    },
+    {
+      "identity" : "swiftlintplugins",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/SimplyDanny/SwiftLintPlugins",
+      "state" : {
+        "revision" : "9ad9487c2448b3f1265ea2cc8af246b9cae6878d",
+        "version" : "0.56.1"
+      }
+    }
+  ],
+  "version" : 2
+}
