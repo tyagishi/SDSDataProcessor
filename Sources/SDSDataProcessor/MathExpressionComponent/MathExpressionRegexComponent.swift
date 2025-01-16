@@ -31,7 +31,7 @@ extension Regex {
 
 @available(macOS 13, iOS 16.0, tvOS 16.0, watchOS 9.0, *)
 public struct MathExpressionNumericTerm: CustomConsumingRegexComponent {
-    public typealias RegexOutput = Double
+    public typealias RegexOutput = MathExpressionToken
     let locale: Locale
     
     public func consuming(_ input: String, startingAt index: String.Index, in bounds: Range<String.Index>) throws -> (upperBound: String.Index, output: RegexOutput)? {
@@ -39,7 +39,8 @@ public struct MathExpressionNumericTerm: CustomConsumingRegexComponent {
             SignableLocalizedDouble(locale: locale)
         }
         if let match = try regex.prefixMatch(in: input[index..<bounds.upperBound]) {
-            return (match.range.upperBound, match.output) //  as! (upperBound: String.Index, output: SignableLocalizedDouble.RegexOutput)
+            let matchString = String(input[match.range.lowerBound..<match.range.upperBound])
+            return (match.range.upperBound, MathExpressionToken.numeric(match.output, matchString))
         }
         return nil
     }

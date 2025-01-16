@@ -6,14 +6,17 @@
 //
 
 import Foundation
+import SDSMacros
 
+@IsCheckEnum
+@AssociatedValueEnum
 public enum MathExpressionToken: CustomDebugStringConvertible, CaseIterable, Equatable {
-    public static var allCases: [MathExpressionToken] = [.numeric(0.0), .binaryOperator("+"), .openBracket, .closeBracket, .functionName("")]
+    public static var allCases: [MathExpressionToken] = [.numeric(0.0, "0"), .binaryOperator("+"), .openBracket, .closeBracket, .functionName("")]
     
     static let groupingSeparator = Locale.current.groupingSeparator ?? ""
     
     // lexer/parser common
-    case numeric(Double)
+    case numeric(Double, String)
     case binaryOperator(String)
     
     // only for lexer
@@ -27,8 +30,8 @@ public enum MathExpressionToken: CustomDebugStringConvertible, CaseIterable, Equ
     
     public var debugDescription: String {
         switch self {
-        case .numeric(let value):
-            return String(value)
+        case .numeric(let value, let string):
+            return String(value) + " " + string
         case .binaryOperator(let value):
             return value
         case .openBracket:
