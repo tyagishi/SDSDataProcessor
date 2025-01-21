@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/tyagishi/SDSDataStructure",
       "state" : {
-        "revision" : "c0d5722550e259f804ae9791d1e341b34e3b6217",
-        "version" : "4.0.0"
+        "revision" : "4095dd6b8ea8fde5657525a9d06b6158eddbd8a6",
+        "version" : "4.0.3"
       }
     },
     {
@@ -23,8 +23,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/tyagishi/SDSStringExtension",
       "state" : {
-        "revision" : "74432927c5d37ad2c41e90b0c8be8783a166d3ba",
-        "version" : "1.4.0"
+        "revision" : "597e89e438ac4055652c5ab9b3e881a3aa2f2cfd",
+        "version" : "1.4.1"
       }
     },
     {

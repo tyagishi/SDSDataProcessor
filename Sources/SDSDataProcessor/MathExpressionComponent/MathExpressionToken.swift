@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SDSDataStructure
 import SDSMacros
 
 @IsCheckEnum
@@ -17,6 +18,7 @@ public enum MathExpressionToken: CustomDebugStringConvertible, CaseIterable, Equ
     
     // lexer/parser common
     case numeric(Double, String)
+    case variable(String)
     case binaryOperator(String)
     
     // only for lexer
@@ -32,6 +34,8 @@ public enum MathExpressionToken: CustomDebugStringConvertible, CaseIterable, Equ
         switch self {
         case .numeric(let value, let string):
             return String(value) + " " + string
+        case .variable(let string):
+            return "variable: " + string
         case .binaryOperator(let value):
             return value
         case .openBracket:
@@ -45,6 +49,17 @@ public enum MathExpressionToken: CustomDebugStringConvertible, CaseIterable, Equ
             return "Bracketed"
         case .function(let name,_):
             return "function \(name)"
+        }
+    }
+}
+
+extension MathExpressionToken {
+    static func binaryOperatorToken(_ rawValue: String) -> MathExpressionToken? {
+        switch rawValue {
+        case "+", "-", "*", "/", "^":
+            return .binaryOperator(rawValue)
+        default:
+            return nil
         }
     }
 }

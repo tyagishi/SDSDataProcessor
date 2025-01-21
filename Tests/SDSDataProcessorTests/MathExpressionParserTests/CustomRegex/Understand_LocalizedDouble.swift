@@ -36,7 +36,6 @@ final class Understand_LocalizedDouble: XCTestCase {
     
     func test_TryCheck_00() async throws {
         let value = Reference(Double.self)
-        let strValue = Reference(Substring.self)
         
         let base = Regex {
             Optionally("+",
@@ -86,7 +85,7 @@ final class Understand_LocalizedDouble: XCTestCase {
         }
         
         let matchDigitOnly = try sut.wholeMatch(in: "12345")
-        var output = try XCTUnwrap(matchDigitOnly?.output)
+        let output = try XCTUnwrap(matchDigitOnly?.output)
         XCTAssertEqual(output, 12345, accuracy: 0.001)
     }
     
@@ -96,7 +95,7 @@ final class Understand_LocalizedDouble: XCTestCase {
         }
         
         let matchDigitDotDigit = try sut.wholeMatch(in: "123.45")
-        var output = try XCTUnwrap(matchDigitDotDigit?.output)
+        let output = try XCTUnwrap(matchDigitDotDigit?.output)
         XCTAssertEqual(output, 123.45, accuracy: 0.001)
         
         let matchDigitDotDigitDotDigital = try sut.wholeMatch(in: "123.45.67")
@@ -109,7 +108,7 @@ final class Understand_LocalizedDouble: XCTestCase {
         }
         
         let matchDigitCommaDigit = try sut.wholeMatch(in: "1,123")
-        var output = try XCTUnwrap(matchDigitCommaDigit?.output)
+        let output = try XCTUnwrap(matchDigitCommaDigit?.output)
         XCTAssertEqual(output, 1123, accuracy: 0.001)
         
         let matchDigitCommaDigitInvalidCommnaDigit = try sut.wholeMatch(in: "1,234,56")
@@ -122,7 +121,7 @@ final class Understand_LocalizedDouble: XCTestCase {
         }
         
         let matchDigitCommaDigitDotDigit = try sut.wholeMatch(in: "1,123.45")
-        var output = try XCTUnwrap(matchDigitCommaDigitDotDigit?.output)
+        let output = try XCTUnwrap(matchDigitCommaDigitDotDigit?.output)
         XCTAssertEqual(output, 1123.45, accuracy: 0.001)
         
         let matchDigitDotDigitalComma = try sut.wholeMatch(in: "1.123,45")

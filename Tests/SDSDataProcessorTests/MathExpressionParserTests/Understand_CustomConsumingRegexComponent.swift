@@ -24,8 +24,6 @@ final class Understand_CustomConsumingRegexComponent: XCTestCase {
         XCTAssertEqual(match!.range.lowerBound, string.startIndex)
         let endOfHello = string.index(string.startIndex, offsetBy: 5)
         XCTAssertEqual(match!.range.upperBound, endOfHello)
-        let check12 = match!.startIndex
-        let check123 = match!.output
         
         XCTAssertEqual(match!.range.lowerBound, match!.output.startIndex)
         XCTAssertEqual(match!.range.upperBound, match!.output.endIndex)
@@ -93,41 +91,17 @@ final class Understand_CustomConsumingRegexComponent: XCTestCase {
         XCTAssertFalse(result)
     }
 
-//    func testBasic_01() async throws {
-//        let string = "HelloWorld"
-//        
-//        let sut = MathExpressionRegexComponent()
-//
-//        let result = try? sut.consuming(string, startingAt: string.startIndex, in: string.fullRange)
-//        
-//        XCTAssertNil(result)
-//    }
-//    
-//    func test_asRegex_01() async throws {
-//        let string = "+++"
-//        
-//        let check = Regex {
-//            PlusRegexComponent()
-//        }
-//        
-//        let match = try check.wholeMatch(in: string)
-//        let check1 = match?.output
-//        XCTAssertEqual(match?.count, 3)
-//        print(match)
-//    }
-//    
-//    func test_localizedDouble_01() async throws {
-//        let num1 = "123.456789"
-//        let num2 = "1.0e-3"
-//        
-//        let sut = Regex {
-//            One(.localizedDouble(locale: Locale(languageCode: .japanese, languageRegion: .japan)))
-//        }
-//        
-//        let match1 = try sut.wholeMatch(in: num1)
-//        print("\(match1)")
-//        let match2 = try sut.wholeMatch(in: num2)
-//        print("\(match2)")
-//
-//    }
+    func test_localizedDouble_01() async throws {
+        let num1 = "123.456789"
+        let num2 = "1.0e-3"
+        
+        let sut = Regex {
+            One(.localizedDouble(locale: Locale(languageCode: .japanese, languageRegion: .japan)))
+        }
+        
+        let match1 = try sut.wholeMatch(in: num1)
+        XCTAssertNotNil(match1)
+        let match2 = try sut.wholeMatch(in: num2)
+        XCTAssertNotNil(match2)
+    }
 }
