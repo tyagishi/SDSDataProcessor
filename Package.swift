@@ -18,7 +18,8 @@ let package = Package(
     dependencies: [
         // Dependencies declare other packages that this package depends on.
         // .package(url: /* package url */, from: "1.0.0"),
-        .package(url: "https://github.com/tyagishi/SDSDataStructure", from: "4.0.0"),
+        .package(url: "https://github.com/tyagishi/SDSDataStructure", from: "4.0.12"),
+        .package(url: "https://github.com/tyagishi/SDSStringExtension", from: "1.4.0"),
         .package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", exact: "0.56.1"),
     ],
     targets: [

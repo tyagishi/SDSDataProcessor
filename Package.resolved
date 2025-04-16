@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/tyagishi/SDSDataStructure",
       "state" : {
-        "revision" : "c0d5722550e259f804ae9791d1e341b34e3b6217",
-        "version" : "4.0.0"
+        "revision" : "23e30c9def89d8e59ac8169b1ec2cfe30f0a0c91",
+        "version" : "4.0.12"
       }
     },
     {
