@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SDSStringExtension
 
 public func calcMathExpression(_ string: String) throws -> Double {
     let filter = FilterLexer(chars: MathExpression.mathExpressionCharacterSet,
