@@ -11,8 +11,8 @@ import SDSMacros
 
 @IsCheckEnum
 @AssociatedValueEnum
-public enum MathExpressionToken: CustomDebugStringConvertible, CaseIterable, Equatable {
-    public static var allCases: [MathExpressionToken] = [.numeric(0.0, "0"), .binaryOperator("+"), .openBracket, .closeBracket, .functionName("")]
+public enum METoken: CustomDebugStringConvertible, CaseIterable, Equatable {
+    public static var allCases: [METoken] = [.numeric(0.0, "0"), .binaryOperator("+"), .openBracket, .closeBracket, .functionName("")]
     
     static let groupingSeparator = Locale.current.groupingSeparator ?? ""
     
@@ -21,7 +21,10 @@ public enum MathExpressionToken: CustomDebugStringConvertible, CaseIterable, Equ
     case variable(String)
     case binaryOperator(String)
     
-    // only for lexer
+    // only for lexer (basically only "()" can be accepted
+    case openParenthesis(String)
+    case closeParenthesis(String)
+    
     case openBracket
     case functionName(String)
     case closeBracket
@@ -38,11 +41,11 @@ public enum MathExpressionToken: CustomDebugStringConvertible, CaseIterable, Equ
             return "variable: " + string
         case .binaryOperator(let value):
             return value
-        case .openBracket:
+        case .openBracket, .openParenthesis:
             return "("
         case .functionName(let name):
             return "function \(name)"
-        case .closeBracket:
+        case .closeBracket, .closeParenthesis:
             return")"
         // followings are only for parser
         case .bracketed:
@@ -53,13 +56,3 @@ public enum MathExpressionToken: CustomDebugStringConvertible, CaseIterable, Equ
     }
 }
 
-extension MathExpressionToken {
-    static func binaryOperatorToken(_ rawValue: String) -> MathExpressionToken? {
-        switch rawValue {
-        case "+", "-", "*", "/", "^":
-            return .binaryOperator(rawValue)
-        default:
-            return nil
-        }
-    }
-}
