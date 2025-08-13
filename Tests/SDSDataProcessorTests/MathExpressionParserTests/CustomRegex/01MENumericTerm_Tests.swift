@@ -13,24 +13,26 @@ import RegexBuilder
 final class MENumericTerm_Tests: XCTestCase {
 
     func test_MENumericTerm() async throws {
-        let sut = Regex<MathExpressionToken> {
+        let sut = Regex<METoken> {
             MENumericTerm(locale: .init(identifier: "ja-JP"))
         }
         
         let simpleMatch = try sut.wholeMatch(in: "12.34")
         var output = try XCTUnwrap(simpleMatch?.output)
-        XCTAssertEqual(output, MathExpressionToken.numeric(12.34, "12.34"))
+        XCTAssertEqual(output, METoken.numeric(12.34, "12.34"))
+        
+//        var evalResult = try 
 
         let simpleMatch2 = try sut.wholeMatch(in: "-12.34")
         output = try XCTUnwrap(simpleMatch2?.output)
-        XCTAssertEqual(output, MathExpressionToken.numeric(-12.34, "-12.34"))
+        XCTAssertEqual(output, METoken.numeric(-12.34, "-12.34"))
 
         let plusMatch = try sut.wholeMatch(in: "+12.34")
         output = try XCTUnwrap(plusMatch?.output)
-        XCTAssertEqual(output, MathExpressionToken.numeric(12.34, "+12.34"))
+        XCTAssertEqual(output, METoken.numeric(12.34, "+12.34"))
 
         let groupMatch = try sut.wholeMatch(in: "+1,234.5")
         output = try XCTUnwrap(groupMatch?.output)
-        XCTAssertEqual(output, MathExpressionToken.numeric(1234.5, "+1,234.5"))
+        XCTAssertEqual(output, METoken.numeric(1234.5, "+1,234.5"))
     }
 }

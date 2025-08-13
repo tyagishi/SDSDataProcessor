@@ -14,24 +14,46 @@ import Foundation
 #if canImport(RegexBuilder)
 
 import RegexBuilder
-
-@available(macOS 13, iOS 16.0, tvOS 16.0, watchOS 9.0, *)
-extension Regex {
-    public func matches(_ input: String, in bounds: Range<String.Index>,
-                        needNext: (Regex<Output>.Match) -> Bool = { _ in true }) throws -> [Regex<Output>.Match] {
-        var result: [Regex<Output>.Match] = []
-        var currentIndex = bounds.lowerBound
-        while let match = try self.firstMatch(in: input[currentIndex..<bounds.upperBound]) {
-            result.append(match)
-            currentIndex = match.range.upperBound
-            guard currentIndex < bounds.upperBound else { break }
-            guard currentIndex < input.endIndex else { break }
-            guard needNext(match) else { break }
-        }
-        
-        return result
-    }
-}
+//@available(macOS 13, iOS 16.0, tvOS 16.0, watchOS 9.0, *)
+//public struct METerm: CustomConsumingRegexComponent {
+//    public typealias RegexOutput = [METoken]
+//    let locale: Locale
+//    let variableNames: [String]
+//
+//    public init(locale: Locale, variableNames: [String] = []) {
+//        self.locale = locale
+//        self.variableNames = variableNames
+//    }
+//
+//    public func consuming(_ input: String, startingAt index: String.Index, in bounds: Range<String.Index>) throws -> (upperBound: String.Index, output: RegexOutput)? {
+//        let openRegex = Regex { MEOpenParenthesis() }
+//        let closeRegex = Regex { MECloseParenthesis() }
+//        let numericRegx = Regex { MENumericTerm(locale: locale) }
+//        let varRegx = Regex { MEVariableTerm(variableNames: variableNames) }
+//
+//        var foundTokens: [METoken] = []
+//        var startIndex = index
+//        while startIndex < bounds.upperBound {
+//            if let match = try openRegex.prefixMatch(in: input[startIndex..<bounds.upperBound]) {
+//                foundTokens.append(match.output)
+//                startIndex = match.range.upperBound
+//            } else if let match = try closeRegex.prefixMatch(in: input[startIndex..<bounds.upperBound]) {
+//                foundTokens.append(match.output)
+//                startIndex = match.range.upperBound
+//            } else if let match = try numericRegx.prefixMatch(in: input[startIndex..<bounds.upperBound]) {
+//                foundTokens.append(match.output)
+//                startIndex = match.range.upperBound
+//            } else if let match = try varRegx.prefixMatch(in: input[startIndex..<bounds.upperBound]) {
+//                foundTokens.append(match.output)
+//                startIndex = match.range.upperBound
+//            } else {
+//                break
+//            }
+//        }
+//        if startIndex == index { return nil }
+//        return (startIndex, foundTokens)
+//    }
+//}
 
 //@available(macOS 13, iOS 16.0, tvOS 16.0, watchOS 9.0, *)
 //public struct MathExpressionTerm: CustomConsumingRegexComponent {
@@ -144,6 +166,24 @@ extension Regex {
 //}
 
 #if DEBUG
+@available(macOS 13, iOS 16.0, tvOS 16.0, watchOS 9.0, *)
+extension Regex {
+    public func matches(_ input: String, in bounds: Range<String.Index>,
+                        needNext: (Regex<Output>.Match) -> Bool = { _ in true }) throws -> [Regex<Output>.Match] {
+        var result: [Regex<Output>.Match] = []
+        var currentIndex = bounds.lowerBound
+        while let match = try self.firstMatch(in: input[currentIndex..<bounds.upperBound]) {
+            result.append(match)
+            currentIndex = match.range.upperBound
+            guard currentIndex < bounds.upperBound else { break }
+            guard currentIndex < input.endIndex else { break }
+            guard needNext(match) else { break }
+        }
+        
+        return result
+    }
+}
+
 @available(macOS 13, iOS 16.0, tvOS 16.0, watchOS 9.0, *)
 public struct SignableLocalizedDouble: CustomConsumingRegexComponent {
     public typealias RegexOutput = Double
