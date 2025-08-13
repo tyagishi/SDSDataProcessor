@@ -21,8 +21,6 @@ final class MENumericTerm_Tests: XCTestCase {
         var output = try XCTUnwrap(simpleMatch?.output)
         XCTAssertEqual(output, METoken.numeric(12.34, "12.34"))
         
-//        var evalResult = try 
-
         let simpleMatch2 = try sut.wholeMatch(in: "-12.34")
         output = try XCTUnwrap(simpleMatch2?.output)
         XCTAssertEqual(output, METoken.numeric(-12.34, "-12.34"))

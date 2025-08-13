@@ -55,4 +55,15 @@ public enum METoken: CustomDebugStringConvertible, CaseIterable, Equatable {
 //            return "function \(name)"
         }
     }
+    
+    func doubleValue(_ map: [String: Double] = [:]) -> Double? {
+        switch self {
+        case .numeric(let double, _):
+            return double
+        case .variable(let varName):
+            return map[varName]
+        default:
+            return nil
+        }
+    }
 }

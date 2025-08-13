@@ -18,10 +18,18 @@ final class _0MEExpression_Tests: XCTestCase {
         let numericMatch = try sut.wholeMatch(in: "+12.34")
         var output = try XCTUnwrap(numericMatch?.output)
         XCTAssertEqual(output, [METoken.numeric(12.34, "+12.34")])
+        
+        var parseResult = try parseExpression(output)
+        XCTAssertEqual(parseResult.value, METoken.numeric(12.34, "+12.34"))
+        XCTAssertEqual(try parseResult.evaluate(), 12.34, accuracy: 0.01)
 
         let variableMatch = try sut.wholeMatch(in: "x")
         output = try XCTUnwrap(variableMatch?.output)
         XCTAssertEqual(output, [METoken.variable("x")])
+
+        parseResult = try parseExpression(output)
+        XCTAssertEqual(parseResult.value, METoken.variable("x"))
+        XCTAssertEqual(try parseResult.evaluate(["x": 12.0]), 12.0, accuracy: 0.01)
     }
     
     func test_MEExpression_parenthesis() async throws {
