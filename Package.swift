@@ -21,6 +21,7 @@ let package = Package(
         .package(url: "https://github.com/tyagishi/SDSDataStructure", from: "4.0.0"),
         .package(url: "https://github.com/tyagishi/SDSSwiftExtension", from: "2.1.4"),
         .package(url: "https://github.com/tyagishi/SDSStringExtension", from: "1.4.0"),
+        .package(url: "https://github.com/tyagishi/SDSFoundationExtension", from: "1.5.0"),
         .package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", exact: "0.56.1"),
     ],
     targets: [
@@ -28,7 +29,7 @@ let package = Package(
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
             name: "SDSDataProcessor",
-            dependencies: ["SDSDataStructure", "SDSSwiftExtension"],
+            dependencies: ["SDSDataStructure", "SDSSwiftExtension", "SDSFoundationExtension"],
             plugins: [
                 .plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")
             ]

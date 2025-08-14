@@ -11,7 +11,7 @@ import SDSMacros
 
 @IsCheckEnum
 @AssociatedValueEnum
-public enum METoken: CustomDebugStringConvertible, CaseIterable, Equatable {
+public enum METoken: CaseIterable, Equatable {
     public static var allCases: [METoken] = [.numeric(0.0, "0"), .binaryOperator("+")]
     
     static let groupingSeparator = Locale.current.groupingSeparator ?? ""
@@ -33,7 +33,20 @@ public enum METoken: CustomDebugStringConvertible, CaseIterable, Equatable {
     // followings are generated only from parser
 //    case bracketed(MathExpression)
 //    case function(String, MathExpression)
-    
+
+    func doubleValue(_ map: [String: Double] = [:]) -> Double? {
+        switch self {
+        case .numeric(let double, _):
+            return double
+        case .variable(let varName):
+            return map[varName]
+        default:
+            return nil
+        }
+    }
+}
+
+extension METoken: CustomDebugStringConvertible {
     public var debugDescription: String {
         switch self {
         case .numeric(let value, let string):
@@ -53,17 +66,6 @@ public enum METoken: CustomDebugStringConvertible, CaseIterable, Equatable {
 //            return "Bracketed"
 //        case .function(let name,_):
 //            return "function \(name)"
-        }
-    }
-    
-    func doubleValue(_ map: [String: Double] = [:]) -> Double? {
-        switch self {
-        case .numeric(let double, _):
-            return double
-        case .variable(let varName):
-            return map[varName]
-        default:
-            return nil
         }
     }
 }

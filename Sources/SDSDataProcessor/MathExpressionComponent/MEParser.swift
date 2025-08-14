@@ -7,9 +7,11 @@
 
 import Foundation
 import SDSDataStructure
+import SDSSwiftExtension
 
 public enum MEParserError: Error {
     case empty
+    case unknownStructure
 //    case invalidToken
 //    case invalidExpression
 //    case invalidAST
@@ -24,8 +26,25 @@ public typealias MEPolynomialAST = BinaryTreeNode<METoken>
 public func parseExpression(_ expression: [METoken]) throws -> MEPolynomialAST {
     guard !expression.isEmpty else { throw MEParserError.empty }
     
-    let ast = MEPolynomialAST(value: expression[0])
-    return ast
+    var rootASTNode = MEPolynomialAST(value: expression[0])
+    var tokenToBeProcessed = 1
+    
+    while tokenToBeProcessed < expression.count {
+        if expression[tokenToBeProcessed].isBinaryOperator == true,
+           let nextToken = expression[safe: tokenToBeProcessed + 1] {
+            if nextToken.isNumeric || nextToken.isVariable {
+                // 1 "+ 2" or 1 "+ x"
+                let leftNode = rootASTNode
+                let rightNode = MEPolynomialAST(value: nextToken)
+                rootASTNode = MEPolynomialAST(value: expression[tokenToBeProcessed], left: leftNode, right: rightNode)
+                tokenToBeProcessed += 2
+            }
+        } else {
+            throw MEParserError.unknownStructure
+        }
+    }
+    
+    return rootASTNode
     
 //    let lhs = MEPolynomialAST(value: expression[0])
 //    let rhs = MEPolynomialAST(value: expression[1])
@@ -133,19 +152,27 @@ public func parseExpression(_ expression: [METoken]) throws -> MEPolynomialAST {
 extension MEPolynomialAST {
     typealias Error = MEParserError
 
-    // swiftlint:disable cyclomatic_complexity
     public func evaluate(_ variableValues: [String: Double] = [:]) throws -> Double {
-        guard let value = self.value.doubleValue(variableValues) else { throw Error.unsupported }
-        return value
-        //    if self.left == nil, self.right == nil {
-        //        if self.token.isNumeric {
-        //            return self.token.doubleValue!
-        //        }
-        ////        if let expression = self.token.expression {
-        ////            return try expression.calc()
-        ////        }
-        //        throw Error.invalidAST
-        //    }
+
+        if self.left == nil, self.right == nil {
+            guard let value = self.value.doubleValue(variableValues) else { throw Error.unsupported }
+            return value
+        }
+
+        if let left = self.left,
+           let leftValue = try? left.evaluate(variableValues),
+           let right = self.right,
+           let rightValue = try? right.evaluate(variableValues) {
+            switch self.value.binaryOperatorValues {
+            case "+":
+                return leftValue + rightValue
+            case "-":
+                return leftValue - rightValue
+            default:
+                throw Error.unsupported
+            }
+        }
+
         //    if let left = self.left, let right = self.right,
         //       let opeString = self.token.opeString {
         //        let leftValue = try left.calc()
@@ -170,5 +197,4 @@ extension MEPolynomialAST {
         //    }
         return 0.0
     }
-    // swiftlint:enable cyclomatic_complexity    }
 }
