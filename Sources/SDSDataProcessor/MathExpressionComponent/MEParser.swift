@@ -12,8 +12,8 @@ import SDSSwiftExtension
 public enum MEParserError: Error {
     case empty
     case unknownStructure
+    case invalidExpression
 //    case invalidToken
-//    case invalidExpression
 //    case invalidAST
 //    case unknownOperator
 //    case unbalancedBrackets
@@ -43,6 +43,8 @@ public func parseExpression(_ expression: [METoken]) throws -> MEPolynomialAST {
             throw MEParserError.unknownStructure
         }
     }
+    
+    guard tokenToBeProcessed == expression.count else { throw MEParserError.invalidExpression }
     
     return rootASTNode
     
