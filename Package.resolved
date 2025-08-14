@@ -10,6 +10,15 @@
       }
     },
     {
+      "identity" : "sdsfoundationextension",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/tyagishi/SDSFoundationExtension",
+      "state" : {
+        "revision" : "1c8598f806d1d0cb8ecc93e0756e725c3de74c65",
+        "version" : "1.5.0"
+      }
+    },
+    {
       "identity" : "sdsmacros",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/tyagishi/SDSMacros",
