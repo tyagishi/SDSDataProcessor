@@ -12,6 +12,8 @@ import SDSSwiftExtension
 public enum MEParserError: Error {
     case empty
     case unknownStructure
+    case unpairedParenthesis
+    case emptyParenthesis
     case invalidExpression
 //    case invalidToken
 //    case invalidAST
@@ -23,14 +25,28 @@ public enum MEParserError: Error {
 
 public typealias MEPolynomialAST = BinaryTreeNode<METoken>
 
-public func parseExpression(_ expression: [METoken]) throws -> MEPolynomialAST {
+public func parseExpression<T>(_ expression: T, range: Range<T.Index>? = nil) throws -> MEPolynomialAST where T: RandomAccessCollection, T.Element == METoken, T.Index == Int {
     guard !expression.isEmpty else { throw MEParserError.empty }
+
+    let processRange = range ?? (0..<expression.count)
+    var rootASTNode: MEPolynomialAST
+    var tokenToBeProcessed: Int = processRange.lowerBound
+
+    // first token needs special treatment
+    if expression[tokenToBeProcessed].isOpenParenthesis {
+        guard let closeParentheisIndex = expression[tokenToBeProcessed...].firstIndex(where: { $0.isCloseParenthesis }) else { throw MEParserError.unpairedParenthesis }
+        guard tokenToBeProcessed < (closeParentheisIndex - 1) else { throw MEParserError.emptyParenthesis }
+        //rootASTNode.right = MEPol
+        let rightValue = try parseExpression(expression[(tokenToBeProcessed+1)..<closeParentheisIndex], range: (tokenToBeProcessed+1)..<closeParentheisIndex)
+        rootASTNode = MEPolynomialAST(value: .unaryOperator("(", ")"), left: nil, right: rightValue)
+        tokenToBeProcessed = closeParentheisIndex + 1
+    } else {
+        rootASTNode = MEPolynomialAST(value: expression[tokenToBeProcessed])
+        tokenToBeProcessed += 1
+    }
     
-    var rootASTNode = MEPolynomialAST(value: expression[0])
-    var tokenToBeProcessed = 1
-    
-    while tokenToBeProcessed < expression.count {
-        if expression[tokenToBeProcessed].isBinaryOperator == true,
+    while tokenToBeProcessed < processRange.upperBound {
+        if expression[tokenToBeProcessed].isBinaryOperator,
            let nextToken = expression[safe: tokenToBeProcessed + 1] {
             if nextToken.isNumeric || nextToken.isVariable {
                 // 1 "+ 2" or 1 "+ x"
@@ -39,12 +55,20 @@ public func parseExpression(_ expression: [METoken]) throws -> MEPolynomialAST {
                 rootASTNode = MEPolynomialAST(value: expression[tokenToBeProcessed], left: leftNode, right: rightNode)
                 tokenToBeProcessed += 2
             }
+        } else if expression[tokenToBeProcessed].isOpenParenthesis {
+            // find close parenthesis
+//            guard let closeParentheisIndex = expression[tokenToBeProcessed...].firstIndex(where: { $0.isCloseParenthesis }) else { throw MEParserError.unpairedParenthesis }
+//            guard tokenToBeProcessed < (closeParentheisIndex - 1) else { throw MEParserError.emptyParenthesis }
+//            let subAST = try parseExpression(expression[tokenToBeProcessed+1..<closeParentheisIndex])
+            throw MEParserError.unknownStructure
+
+            // parse sub tokens
         } else {
             throw MEParserError.unknownStructure
         }
     }
     
-    guard tokenToBeProcessed == expression.count else { throw MEParserError.invalidExpression }
+    guard tokenToBeProcessed == processRange.upperBound else { throw MEParserError.invalidExpression }
     
     return rootASTNode
     

@@ -20,15 +20,14 @@ public enum METoken: CaseIterable, Equatable {
     case numeric(Double, String)
     case variable(String)
     case binaryOperator(String)
-    //case unaryOperator(String) // not implemented yet
     
     // only for lexer (basically only "()" can be accepted
     case openParenthesis(String)
     case closeParenthesis(String)
-    
-//    case openBracket
+
+    // for parser
+    case unaryOperator(String, String)
 //    case functionName(String)
-//    case closeBracket
     
     // followings are generated only from parser
 //    case bracketed(MathExpression)
@@ -59,6 +58,9 @@ extension METoken: CustomDebugStringConvertible {
             return parenthesis
         case .closeParenthesis(let parenthesis):
             return parenthesis
+        case .unaryOperator(let start, let end):
+            return "enclosed in " + start + end
+            
 //        case .functionName(let name):
 //            return "function \(name)"
 //        // followings are only for parser
