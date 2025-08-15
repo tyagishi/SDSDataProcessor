@@ -8,7 +8,7 @@
 import XCTest
 @testable import SDSDataProcessor
 
-final class _0MEExpression_Tests: XCTestCase {
+final class _50MEExpressionParser_Tests: XCTestCase {
     
     func test_MEExpression_single() async throws {
         let sut = Regex {
