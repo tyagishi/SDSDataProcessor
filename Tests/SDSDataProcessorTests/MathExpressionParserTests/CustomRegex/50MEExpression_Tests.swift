@@ -135,6 +135,28 @@ final class _0MEExpression_Tests: XCTestCase {
         XCTAssertEqual(try parseResult.evaluate(), 3.4, accuracy: 0.01)
     }
     
+    func test_MEExpression_moreThanTermOpeTerm_Var() async throws {
+        let sut = Regex {
+            MEExpression(locale: .init(identifier: "ja-JP"), variableNames: ["x", "y", "z", "u"])
+        }
+        
+        let variables: [String: Double] = ["x": 1, "y": 2, "z": 3, "u": 5]
+        
+        let varOpeNumMatch = try sut.wholeMatch(in: "x + y - z + u")
+        let output = try XCTUnwrap(varOpeNumMatch?.output)
+        XCTAssertEqual(output, [.variable("x"), .binaryOperator("+"), .variable("y"), .binaryOperator("-"), .variable("z"), .binaryOperator("+"), .variable("u")])
+        
+        let parseResult = try parseExpression(output)
+        XCTAssertEqual(parseResult.value, .binaryOperator("+"))
+        XCTAssertEqual(parseResult.right?.value, .variable("u"))
+        XCTAssertEqual(parseResult.left?.value, .binaryOperator("-"))
+        XCTAssertEqual(parseResult.left?.right?.value, .variable("z"))
+        XCTAssertEqual(parseResult.left?.left?.value, .binaryOperator("+"))
+        XCTAssertEqual(parseResult.left?.left?.left?.value, .variable("x"))
+        XCTAssertEqual(parseResult.left?.left?.right?.value, .variable("y"))
+        XCTAssertEqual(try parseResult.evaluate(variables), 5.0, accuracy: 0.01)
+    }
+    
     func test_MEExpression_parenthesis() async throws {
         let sut = Regex {
             MEExpression(locale: .init(identifier: "ja-JP"), variableNames: ["x", "y"])
