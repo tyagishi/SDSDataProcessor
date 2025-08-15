@@ -23,5 +23,4 @@ final class _51MEExpressionParserError_Tests: XCTestCase {
             XCTAssertEqual(error as? MEParserError, MEParserError.unknownStructure)
         })
     }
-
 }

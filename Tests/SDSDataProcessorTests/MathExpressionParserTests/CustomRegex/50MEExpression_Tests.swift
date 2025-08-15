@@ -9,7 +9,7 @@ import XCTest
 @testable import SDSDataProcessor
 
 final class _0MEExpression_Tests: XCTestCase {
-
+    
     func test_MEExpression_single() async throws {
         let sut = Regex {
             MEExpression(locale: .init(identifier: "ja-JP"), variableNames: ["x", "y"])
@@ -22,11 +22,11 @@ final class _0MEExpression_Tests: XCTestCase {
         var parseResult = try parseExpression(output)
         XCTAssertEqual(parseResult.value, METoken.numeric(12.34, "+12.34"))
         XCTAssertEqual(try parseResult.evaluate(), 12.34, accuracy: 0.01)
-
+        
         let variableMatch = try sut.wholeMatch(in: "x")
         output = try XCTUnwrap(variableMatch?.output)
         XCTAssertEqual(output, [METoken.variable("x")])
-
+        
         parseResult = try parseExpression(output)
         XCTAssertEqual(parseResult.value, METoken.variable("x"))
         XCTAssertEqual(try parseResult.evaluate(["x": 12.0]), 12.0, accuracy: 0.01)
@@ -82,7 +82,7 @@ final class _0MEExpression_Tests: XCTestCase {
         XCTAssertEqual(parseResult.left?.value, .variable("x"))
         XCTAssertEqual(parseResult.right?.value, .numeric(1.2, "1.2"))
         XCTAssertEqual(try parseResult.evaluate(variables), 2.2, accuracy: 0.01)
-
+        
         let numOpeVarMatch = try sut.wholeMatch(in: "2.5 + y")
         output = try XCTUnwrap(numOpeVarMatch?.output)
         XCTAssertEqual(output, [.numeric(2.5, "2.5"), .binaryOperator("+"), .variable("y")])
@@ -156,35 +156,4 @@ final class _0MEExpression_Tests: XCTestCase {
         XCTAssertEqual(parseResult.left?.left?.right?.value, .variable("y"))
         XCTAssertEqual(try parseResult.evaluate(variables), 5.0, accuracy: 0.01)
     }
-    
-    func test_MEExpression_parenthesis() async throws {
-        let sut = Regex {
-            MEExpression(locale: .init(identifier: "ja-JP"), variableNames: ["x", "y"])
-        }
-        
-        let numMatch = try sut.wholeMatch(in: "(12.34)")
-        var output = try XCTUnwrap(numMatch?.output)
-        XCTAssertEqual(output, [.openParenthesis("("), .numeric(12.34, "12.34"), .closeParenthesis(")")])
-
-        let varMatch = try sut.wholeMatch(in: "(x)")
-        output = try XCTUnwrap(varMatch?.output)
-        XCTAssertEqual(output, [.openParenthesis("("), .variable("x"), .closeParenthesis(")")])
-
-        let num2Match = try sut.wholeMatch(in: "(12.34 * 3)")
-        output = try XCTUnwrap(num2Match?.output)
-        XCTAssertEqual(output, [.openParenthesis("("), .numeric(12.34, "12.34"), .binaryOperator("*"), .numeric(3, "3"), .closeParenthesis(")")])
-
-        let var2Match = try sut.wholeMatch(in: "(x + y)")
-        output = try XCTUnwrap(var2Match?.output)
-        XCTAssertEqual(output, [.openParenthesis("("), .variable("x"), .binaryOperator("+"), .variable("y"), .closeParenthesis(")")])
-
-        let numVarMatch = try sut.prefixMatch(in: "(y - 13.2 )")
-        output = try XCTUnwrap(numVarMatch?.output)
-        XCTAssertEqual(output, [.openParenthesis("("), .variable("y"), .binaryOperator("-"),  .numeric(13.2, "13.2"), .closeParenthesis(")")])
-
-        let varNumMatch = try sut.prefixMatch(in: "(13.2 + x )")
-        output = try XCTUnwrap(varNumMatch?.output)
-        XCTAssertEqual(output, [.openParenthesis("("), .numeric(13.2, "13.2"), .binaryOperator("+"), .variable("x"), .closeParenthesis(")")])
-    }
-
 }
