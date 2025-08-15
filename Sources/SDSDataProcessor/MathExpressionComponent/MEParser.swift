@@ -197,6 +197,9 @@ extension MEPolynomialAST {
             default:
                 throw Error.unsupported
             }
+        } else if self.value.isUnaryOperator,
+                  let rightValue = try? self.right?.evaluate(variableValues) {
+            return rightValue
         }
 
         //    if let left = self.left, let right = self.right,

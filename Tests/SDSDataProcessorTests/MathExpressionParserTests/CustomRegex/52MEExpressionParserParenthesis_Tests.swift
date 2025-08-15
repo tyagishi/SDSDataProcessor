@@ -16,16 +16,13 @@ final class _52MEExpressionParserParenthesis_Tests: XCTestCase {
         }
         
         let numMatch = try sut.wholeMatch(in: "(12.34)")
-        var output = try XCTUnwrap(numMatch?.output)
+        let output = try XCTUnwrap(numMatch?.output)
         XCTAssertEqual(output, [.openParenthesis("("), .numeric(12.34, "12.34"), .closeParenthesis(")")])
         
-        var parseResult = try parseExpression(output)
+        let parseResult = try parseExpression(output)
         XCTAssertEqual(parseResult.value, METoken.unaryOperator("(", ")"))
         XCTAssertEqual(parseResult.right?.value, METoken.numeric(12.34, "12.34"))
-        
-//        XCTAssertEqual(try parseResult.evaluate(), 12.34, accuracy: 0.01)
-
-
+        XCTAssertEqual(try parseResult.evaluate(), 12.34, accuracy: 0.01)
     }
 
 //    func test_MEExpression_parenthesis_singleTerm_var() async throws {
