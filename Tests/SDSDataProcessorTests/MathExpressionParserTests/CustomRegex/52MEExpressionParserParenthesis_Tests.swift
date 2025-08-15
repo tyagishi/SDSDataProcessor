@@ -25,24 +25,22 @@ final class _52MEExpressionParserParenthesis_Tests: XCTestCase {
         XCTAssertEqual(try parseResult.evaluate(), 12.34, accuracy: 0.01)
     }
 
-//    func test_MEExpression_parenthesis_singleTerm_var() async throws {
-//        let sut = Regex {
-//            MEExpression(locale: .init(identifier: "ja-JP"), variableNames: ["x", "y"])
-//        }
-//        
-//        let numMatch = try sut.wholeMatch(in: "(12.34)")
-//        var output = try XCTUnwrap(numMatch?.output)
-//        XCTAssertEqual(output, [.openParenthesis("("), .numeric(12.34, "12.34"), .closeParenthesis(")")])
-//        
-//        var parseResult = try parseExpression(output)
-//        XCTAssertEqual(parseResult.value, METoken.numeric(12.34, "+12.34"))
-//        XCTAssertEqual(try parseResult.evaluate(), 12.34, accuracy: 0.01)
-//
-//        let varMatch = try sut.wholeMatch(in: "(x)")
-//        output = try XCTUnwrap(varMatch?.output)
-//        XCTAssertEqual(output, [.openParenthesis("("), .variable("x"), .closeParenthesis(")")])
-//
-//    }
+    func test_MEExpression_parenthesis_singleTerm_var() async throws {
+        let sut = Regex {
+            MEExpression(locale: .init(identifier: "ja-JP"), variableNames: ["x", "y"])
+        }
+        
+        let variables: [String: Double] = ["x": 1, "y": 2, "z": 3]
+
+        let numMatch = try sut.wholeMatch(in: "(x)")
+        let output = try XCTUnwrap(numMatch?.output)
+        XCTAssertEqual(output, [.openParenthesis("("), .variable("x"), .closeParenthesis(")")])
+        
+        let parseResult = try parseExpression(output)
+        XCTAssertEqual(parseResult.value, .unaryOperator("(", ")"))
+        XCTAssertEqual(parseResult.right?.value, .variable("x"))
+        XCTAssertEqual(try parseResult.evaluate(variables), 1, accuracy: 0.01)
+    }
 //
 //    
 //    func test_MEExpression_parenthesis_singleTerm_______temp() async throws {
