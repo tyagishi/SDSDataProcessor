@@ -74,6 +74,27 @@ final class _52MEExpressionParserParenthesis_Tests: XCTestCase {
         XCTAssertEqual(parseResult.right?.right?.value, .numeric(2, "2"))
         XCTAssertEqual(try parseResult.evaluate(), 14.34, accuracy: 0.01)
     }
+    
+    func test_MEExpression_parenthesis_3Term_num() async throws {
+        let sut = Regex {
+            MEExpression(locale: .init(identifier: "ja-JP"), variableNames: ["x", "y"])
+        }
+        
+        let numMatch = try sut.wholeMatch(in: "12.34 + (2 + 4)")
+        let output = try XCTUnwrap(numMatch?.output)
+        XCTAssertEqual(output, [.numeric(12.34, "12.34"), .binaryOperator("+"),
+                                .openParenthesis("("), .numeric(2, "2"), .binaryOperator("+"), .numeric(4, "4"), .closeParenthesis(")")])
+        
+        let parseResult = try MEParser.parseExpression(output)
+        XCTAssertEqual(parseResult.value, .binaryOperator("+"))
+        XCTAssertEqual(parseResult.left?.value, .numeric(12.34, "12.34"))
+        XCTAssertEqual(parseResult.right?.value, .unaryOperator("(", ")"))
+        XCTAssertEqual(parseResult.right?.right?.value, .binaryOperator("+"))
+        XCTAssertEqual(parseResult.right?.right?.left?.value, .numeric(2, "2"))
+        XCTAssertEqual(parseResult.right?.right?.right?.value, .numeric(4, "4"))
+        
+        XCTAssertEqual(try parseResult.evaluate(), 18.34, accuracy: 0.01)
+    }
 //
 //    
 //    func test_MEExpression_parenthesis_singleTerm_______temp() async throws {
