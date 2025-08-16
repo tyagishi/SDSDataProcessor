@@ -53,7 +53,8 @@ final class _52MEExpressionParserParenthesis_Tests: XCTestCase {
         
         let parseResult = try MEParser.parseExpression(output)
         XCTAssertEqual(parseResult.value, METoken.unaryOperator("(", ")"))
-        XCTAssertEqual(parseResult.right?.value, METoken.numeric(12.34, "12.34"))
+        XCTAssertEqual(parseResult.right?.value, METoken.unaryOperator("(", ")"))
+        XCTAssertEqual(parseResult.right?.right?.value, METoken.numeric(12.34, "12.34"))
         XCTAssertEqual(try parseResult.evaluate(), 12.34, accuracy: 0.01)
     }
 //

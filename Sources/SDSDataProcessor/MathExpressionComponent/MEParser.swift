@@ -26,21 +26,24 @@ public enum MEParserError: Error {
 public typealias MEPolynomialAST = BinaryTreeNode<METoken>
 
 public class MEParser {
-    static public func parseExpression<T>(_ expression: T, range: Range<T.Index>? = nil) throws -> MEPolynomialAST where T: RandomAccessCollection, T.Element == METoken, T.Index == Int {
+    static public func parseExpression<T>(_ expression: T,
+                                          range: Range<T.Index>? = nil) throws -> MEPolynomialAST where T: RandomAccessCollection,
+                                                                                                        T.Element == METoken, T.Index == Int {
         guard !expression.isEmpty else { throw MEParserError.empty }
         
-        let processRange = range ?? (0..<expression.count)
+        let processRange = range ?? (expression.startIndex..<expression.endIndex)
         var rootASTNode: MEPolynomialAST
         var tokenToBeProcessed: Int = processRange.lowerBound
         
         // first token needs special treatment
         if expression[tokenToBeProcessed].isOpenParenthesis {
-            guard let closeParentheisIndex = expression[tokenToBeProcessed...].firstIndex(where: { $0.isCloseParenthesis }) else { throw MEParserError.unpairedParenthesis }
-            guard tokenToBeProcessed < (closeParentheisIndex - 1) else { throw MEParserError.emptyParenthesis }
+            let closeParenthesisIndex = try Self.findPairParenthesis(expression, indexOfOpen: tokenToBeProcessed,
+                                                                     range: processRange)
+            guard tokenToBeProcessed < (closeParenthesisIndex - 1) else { throw MEParserError.emptyParenthesis }
             //rootASTNode.right = MEPol
-            let rightValue = try parseExpression(expression[(tokenToBeProcessed+1)..<closeParentheisIndex], range: (tokenToBeProcessed+1)..<closeParentheisIndex)
+            let rightValue = try parseExpression(expression[(tokenToBeProcessed+1)..<closeParenthesisIndex], range: (tokenToBeProcessed+1)..<closeParenthesisIndex)
             rootASTNode = MEPolynomialAST(value: .unaryOperator("(", ")"), left: nil, right: rightValue)
-            tokenToBeProcessed = closeParentheisIndex + 1
+            tokenToBeProcessed = closeParenthesisIndex + 1
         } else {
             rootASTNode = MEPolynomialAST(value: expression[tokenToBeProcessed])
             tokenToBeProcessed += 1
@@ -80,8 +83,25 @@ public class MEParser {
         //    return ope
     }
     
-}
+    static func findPairParenthesis<T>(_ expression: T, indexOfOpen: T.Index,
+                                       range: Range<T.Index>? = nil) throws -> T.Index where T: RandomAccessCollection,
+                                                                                             T.Element == METoken, T.Index == Int {
+        let checkRange = range ?? (expression.startIndex..<expression.endIndex)
 
+        var checkIndex = indexOfOpen + 1
+        var nestNum = 0
+        while checkIndex < checkRange.upperBound {
+            if expression[checkIndex].isCloseParenthesis {
+                if nestNum == 0 { return checkIndex }
+                nestNum -= 1
+            } else if expression[checkIndex].isOpenParenthesis {
+                nestNum += 1
+            }
+            checkIndex += 1
+        }
+        throw MEParserError.unpairedParenthesis
+    }
+}
 
 //    var workingStack: [MathExpression] = []
 //    var bracketStack: [[MathExpression]] = []
