@@ -19,7 +19,7 @@ final class _52MEExpressionParserParenthesis_Tests: XCTestCase {
         let output = try XCTUnwrap(numMatch?.output)
         XCTAssertEqual(output, [.openParenthesis("("), .numeric(12.34, "12.34"), .closeParenthesis(")")])
         
-        let parseResult = try parseExpression(output)
+        let parseResult = try MEParser.parseExpression(output)
         XCTAssertEqual(parseResult.value, METoken.unaryOperator("(", ")"))
         XCTAssertEqual(parseResult.right?.value, METoken.numeric(12.34, "12.34"))
         XCTAssertEqual(try parseResult.evaluate(), 12.34, accuracy: 0.01)
@@ -36,10 +36,25 @@ final class _52MEExpressionParserParenthesis_Tests: XCTestCase {
         let output = try XCTUnwrap(numMatch?.output)
         XCTAssertEqual(output, [.openParenthesis("("), .variable("x"), .closeParenthesis(")")])
         
-        let parseResult = try parseExpression(output)
+        let parseResult = try MEParser.parseExpression(output)
         XCTAssertEqual(parseResult.value, .unaryOperator("(", ")"))
         XCTAssertEqual(parseResult.right?.value, .variable("x"))
         XCTAssertEqual(try parseResult.evaluate(variables), 1, accuracy: 0.01)
+    }
+
+    func test_MEExpression_nestedParenthesis_singleTerm_num() async throws {
+        let sut = Regex {
+            MEExpression(locale: .init(identifier: "ja-JP"), variableNames: ["x", "y"])
+        }
+        
+        let numMatch = try sut.wholeMatch(in: "((12.34))")
+        let output = try XCTUnwrap(numMatch?.output)
+        XCTAssertEqual(output, [.openParenthesis("("), .openParenthesis("("), .numeric(12.34, "12.34"), .closeParenthesis(")"), .closeParenthesis(")")])
+        
+        let parseResult = try MEParser.parseExpression(output)
+        XCTAssertEqual(parseResult.value, METoken.unaryOperator("(", ")"))
+        XCTAssertEqual(parseResult.right?.value, METoken.numeric(12.34, "12.34"))
+        XCTAssertEqual(try parseResult.evaluate(), 12.34, accuracy: 0.01)
     }
 //
 //    

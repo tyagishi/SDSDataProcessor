@@ -19,7 +19,7 @@ final class _51MEExpressionParserError_Tests: XCTestCase {
         let output = try XCTUnwrap(varOpeVarMatch?.output)
         XCTAssertEqual(output, [.numeric(1, "1"), .binaryOperator("+")])
         
-        XCTAssertThrowsError(try parseExpression(output), "Hello", { error in
+        XCTAssertThrowsError(try MEParser.parseExpression(output), "Hello", { error in
             XCTAssertEqual(error as? MEParserError, MEParserError.unknownStructure)
         })
     }

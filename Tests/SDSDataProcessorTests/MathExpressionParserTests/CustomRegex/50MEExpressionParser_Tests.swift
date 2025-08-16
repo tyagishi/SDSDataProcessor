@@ -19,7 +19,7 @@ final class _50MEExpressionParser_Tests: XCTestCase {
         var output = try XCTUnwrap(numericMatch?.output)
         XCTAssertEqual(output, [METoken.numeric(12.34, "+12.34")])
         
-        var parseResult = try parseExpression(output)
+        var parseResult = try MEParser.parseExpression(output)
         XCTAssertEqual(parseResult.value, METoken.numeric(12.34, "+12.34"))
         XCTAssertEqual(try parseResult.evaluate(), 12.34, accuracy: 0.01)
         
@@ -27,7 +27,7 @@ final class _50MEExpressionParser_Tests: XCTestCase {
         output = try XCTUnwrap(variableMatch?.output)
         XCTAssertEqual(output, [METoken.variable("x")])
         
-        parseResult = try parseExpression(output)
+        parseResult = try MEParser.parseExpression(output)
         XCTAssertEqual(parseResult.value, METoken.variable("x"))
         XCTAssertEqual(try parseResult.evaluate(["x": 12.0]), 12.0, accuracy: 0.01)
     }
@@ -41,7 +41,7 @@ final class _50MEExpressionParser_Tests: XCTestCase {
         let output = try XCTUnwrap(numOpeNumMatch?.output)
         XCTAssertEqual(output, [.numeric(1.0, "1"), .binaryOperator("+"), .numeric(12.34, "12.34")])
         
-        let parseResult = try parseExpression(output)
+        let parseResult = try MEParser.parseExpression(output)
         XCTAssertEqual(parseResult.value, .binaryOperator("+"))
         XCTAssertEqual(parseResult.left?.value, .numeric(1.0, "1"))
         XCTAssertEqual(parseResult.right?.value, .numeric(12.34, "12.34"))
@@ -59,7 +59,7 @@ final class _50MEExpressionParser_Tests: XCTestCase {
         let output = try XCTUnwrap(varOpeVarMatch?.output)
         XCTAssertEqual(output, [.variable("x"), .binaryOperator("+"), .variable("y")])
         
-        let parseResult = try parseExpression(output)
+        let parseResult = try MEParser.parseExpression(output)
         XCTAssertEqual(parseResult.value, .binaryOperator("+"))
         XCTAssertEqual(parseResult.left?.value, .variable("x"))
         XCTAssertEqual(parseResult.right?.value, .variable("y"))
@@ -77,7 +77,7 @@ final class _50MEExpressionParser_Tests: XCTestCase {
         var output = try XCTUnwrap(varOpeNumMatch?.output)
         XCTAssertEqual(output, [.variable("x"), .binaryOperator("+"), .numeric(1.2, "1.2")])
         
-        var parseResult = try parseExpression(output)
+        var parseResult = try MEParser.parseExpression(output)
         XCTAssertEqual(parseResult.value, .binaryOperator("+"))
         XCTAssertEqual(parseResult.left?.value, .variable("x"))
         XCTAssertEqual(parseResult.right?.value, .numeric(1.2, "1.2"))
@@ -87,7 +87,7 @@ final class _50MEExpressionParser_Tests: XCTestCase {
         output = try XCTUnwrap(numOpeVarMatch?.output)
         XCTAssertEqual(output, [.numeric(2.5, "2.5"), .binaryOperator("+"), .variable("y")])
         
-        parseResult = try parseExpression(output)
+        parseResult = try MEParser.parseExpression(output)
         XCTAssertEqual(parseResult.value, .binaryOperator("+"))
         XCTAssertEqual(parseResult.left?.value, .numeric(2.5, "2.5"))
         XCTAssertEqual(parseResult.right?.value, .variable("y"))
@@ -105,7 +105,7 @@ final class _50MEExpressionParser_Tests: XCTestCase {
         let output = try XCTUnwrap(varOpeNumMatch?.output)
         XCTAssertEqual(output, [.numeric(2.3, "2.3"), .binaryOperator("+"), .numeric(1.2, "1.2"), .binaryOperator("-"), .numeric(4.1, "4.1")])
         
-        let parseResult = try parseExpression(output)
+        let parseResult = try MEParser.parseExpression(output)
         XCTAssertEqual(parseResult.value, .binaryOperator("-"))
         XCTAssertEqual(parseResult.left?.value, .binaryOperator("+"))
         XCTAssertEqual(parseResult.left?.left?.value, .numeric(2.3, "2.3"))
@@ -124,7 +124,7 @@ final class _50MEExpressionParser_Tests: XCTestCase {
         XCTAssertEqual(output, [.numeric(2.3, "2.3"), .binaryOperator("+"), .numeric(1.2, "1.2"), .binaryOperator("-"), .numeric(4.1, "4.1"),
                                 .binaryOperator("+"), .numeric(4, "4")])
         
-        let parseResult = try parseExpression(output)
+        let parseResult = try MEParser.parseExpression(output)
         XCTAssertEqual(parseResult.value, .binaryOperator("+"))
         XCTAssertEqual(parseResult.right?.value, .numeric(4, "4"))
         XCTAssertEqual(parseResult.left?.value, .binaryOperator("-"))
@@ -146,7 +146,7 @@ final class _50MEExpressionParser_Tests: XCTestCase {
         let output = try XCTUnwrap(varOpeNumMatch?.output)
         XCTAssertEqual(output, [.variable("x"), .binaryOperator("+"), .variable("y"), .binaryOperator("-"), .variable("z"), .binaryOperator("+"), .variable("u")])
         
-        let parseResult = try parseExpression(output)
+        let parseResult = try MEParser.parseExpression(output)
         XCTAssertEqual(parseResult.value, .binaryOperator("+"))
         XCTAssertEqual(parseResult.right?.value, .variable("u"))
         XCTAssertEqual(parseResult.left?.value, .binaryOperator("-"))
