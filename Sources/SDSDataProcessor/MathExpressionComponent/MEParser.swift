@@ -41,7 +41,7 @@ public class MEParser {
                                                                      range: processRange)
             guard tokenToBeProcessed < (closeParenthesisIndex - 1) else { throw MEParserError.emptyParenthesis }
             //rootASTNode.right = MEPol
-            let rightValue = try parseExpression(expression[(tokenToBeProcessed+1)..<closeParenthesisIndex], range: (tokenToBeProcessed+1)..<closeParenthesisIndex)
+            let rightValue = try parseExpression(expression, range: (tokenToBeProcessed+1)..<closeParenthesisIndex)
             rootASTNode = MEPolynomialAST(value: .unaryOperator("(", ")"), left: nil, right: rightValue)
             tokenToBeProcessed = closeParenthesisIndex + 1
         } else {
@@ -58,6 +58,20 @@ public class MEParser {
                     let rightNode = MEPolynomialAST(value: nextToken)
                     rootASTNode = MEPolynomialAST(value: expression[tokenToBeProcessed], left: leftNode, right: rightNode)
                     tokenToBeProcessed += 2
+                } else if nextToken.isOpenParenthesis {
+                    let openParenthesisIndex = tokenToBeProcessed + 1
+                    let closeParenthesisIndex = try Self.findPairParenthesis(expression, indexOfOpen: openParenthesisIndex,
+                                                                             range: processRange)
+                    guard tokenToBeProcessed < (closeParenthesisIndex - 1) else { throw MEParserError.emptyParenthesis }
+
+                    let rightValue = try parseExpression(expression, range: (openParenthesisIndex+1)..<closeParenthesisIndex)
+                    
+                    let leftNode = rootASTNode
+                    let rightNode = MEPolynomialAST(value: .unaryOperator("(", ")"), left: nil, right: rightValue)
+                    rootASTNode = MEPolynomialAST(value: expression[tokenToBeProcessed], left: leftNode, right: rightNode)
+                    tokenToBeProcessed = closeParenthesisIndex + 1
+                } else {
+                    throw MEParserError.unknownStructure
                 }
             } else if expression[tokenToBeProcessed].isOpenParenthesis {
                 // find close parenthesis
@@ -65,7 +79,6 @@ public class MEParser {
                 //            guard tokenToBeProcessed < (closeParentheisIndex - 1) else { throw MEParserError.emptyParenthesis }
                 //            let subAST = try parseExpression(expression[tokenToBeProcessed+1..<closeParentheisIndex])
                 throw MEParserError.unknownStructure
-                
                 // parse sub tokens
             } else {
                 throw MEParserError.unknownStructure
