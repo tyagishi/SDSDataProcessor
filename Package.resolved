@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/tyagishi/SDSDataStructure",
       "state" : {
-        "revision" : "23e30c9def89d8e59ac8169b1ec2cfe30f0a0c91",
-        "version" : "4.0.12"
+        "revision" : "b230385fe6c73a02a8fa8f2e785bbb44e1baad37",
+        "version" : "5.0.0"
       }
     },
     {
@@ -14,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/tyagishi/SDSFoundationExtension",
       "state" : {
-        "revision" : "1c8598f806d1d0cb8ecc93e0756e725c3de74c65",
-        "version" : "1.5.0"
+        "revision" : "462c8fddaefe9b092a4dbc3a2dbf74eb791edeb3",
+        "version" : "1.5.11"
       }
     },
     {
@@ -23,8 +23,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/tyagishi/SDSMacros",
       "state" : {
-        "revision" : "25ee7d867fe55f9a717e1c6bcc05f2616407635c",
-        "version" : "2.0.0"
+        "revision" : "18c1921f2df0a8ea5ee3447003385f37e3912b0b",
+        "version" : "3.0.4"
       }
     },
     {
@@ -32,8 +32,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/tyagishi/SDSStringExtension",
       "state" : {
-        "revision" : "597e89e438ac4055652c5ab9b3e881a3aa2f2cfd",
-        "version" : "1.4.1"
+        "revision" : "7593b14202633090b9e2681704d1501f99eda3e9",
+        "version" : "1.4.3"
       }
     },
     {
@@ -48,10 +48,10 @@
     {
       "identity" : "swift-syntax",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/apple/swift-syntax.git",
+      "location" : "https://github.com/swiftlang/swift-syntax.git",
       "state" : {
-        "revision" : "2bc86522d115234d1f588efe2bcb4ce4be8f8b82",
-        "version" : "510.0.3"
+        "revision" : "4799286537280063c85a32f09884cfbca301b1a1",
+        "version" : "602.0.0"
       }
     },
     {

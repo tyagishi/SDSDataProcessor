@@ -2,6 +2,10 @@
 
 convenient class/struct/enum/actor collection
 
+## support 
+- 5.x: macOS 14/ iOS 17
+- 4.x: macOS 12/ iOS 14
+
 ## MathExpression/MathExpressionParser/BruteForceLexer
 
 lexer/parser for math expression 
