@@ -18,16 +18,11 @@ let package = Package(
     dependencies: [
         // Dependencies declare other packages that this package depends on.
         // .package(url: /* package url */, from: "1.0.0"),
-<<<<<<< HEAD
-        .package(url: "https://github.com/tyagishi/SDSDataStructure", from: "4.0.12"),
-        .package(url: "https://github.com/tyagishi/SDSStringExtension", from: "1.4.0"),
-=======
         .package(url: "https://github.com/tyagishi/SDSDataStructure", from: "5.0.0"),
         .package(url: "https://github.com/tyagishi/SDSMacros", from: "3.0.0"),
         .package(url: "https://github.com/tyagishi/SDSSwiftExtension", from: "2.1.4"),
         .package(url: "https://github.com/tyagishi/SDSStringExtension", from: "1.4.0"),
         .package(url: "https://github.com/tyagishi/SDSFoundationExtension", from: "1.5.0"),
->>>>>>> feature/CustomRegexBuilder
         .package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", exact: "0.56.1"),
     ],
     targets: [
@@ -35,11 +30,7 @@ let package = Package(
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
             name: "SDSDataProcessor",
-<<<<<<< HEAD
-            dependencies: ["SDSDataStructure", "SDSStringExtension"],
-=======
             dependencies: ["SDSDataStructure", "SDSMacros", "SDSSwiftExtension", "SDSFoundationExtension", "SDSStringExtension"],
->>>>>>> feature/CustomRegexBuilder
             plugins: [
                 .plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")
             ]

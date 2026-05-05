@@ -5,10 +5,6 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/tyagishi/SDSDataStructure",
       "state" : {
-<<<<<<< HEAD
-        "revision" : "23e30c9def89d8e59ac8169b1ec2cfe30f0a0c91",
-        "version" : "4.0.12"
-=======
         "revision" : "b230385fe6c73a02a8fa8f2e785bbb44e1baad37",
         "version" : "5.0.0"
       }
@@ -20,7 +16,6 @@
       "state" : {
         "revision" : "462c8fddaefe9b092a4dbc3a2dbf74eb791edeb3",
         "version" : "1.5.11"
->>>>>>> feature/CustomRegexBuilder
       }
     },
     {
