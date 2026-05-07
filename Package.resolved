@@ -41,8 +41,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/tyagishi/SDSSwiftExtension",
       "state" : {
-        "revision" : "a9ba758d52aaad251d492a1bc1d0de7cb53fd1a9",
-        "version" : "2.1.4"
+        "revision" : "ce379f254facb6ef3731ed6a5e7bad904c34c36d",
+        "version" : "3.0.6"
       }
     },
     {

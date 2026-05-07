@@ -20,7 +20,7 @@ let package = Package(
         // .package(url: /* package url */, from: "1.0.0"),
         .package(url: "https://github.com/tyagishi/SDSDataStructure", from: "5.0.0"),
         .package(url: "https://github.com/tyagishi/SDSMacros", from: "3.0.0"),
-        .package(url: "https://github.com/tyagishi/SDSSwiftExtension", from: "2.1.4"),
+        .package(url: "https://github.com/tyagishi/SDSSwiftExtension", from: "3.0.0"),
         .package(url: "https://github.com/tyagishi/SDSStringExtension", from: "1.4.0"),
         .package(url: "https://github.com/tyagishi/SDSFoundationExtension", from: "1.5.0"),
         .package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", exact: "0.56.1"),
